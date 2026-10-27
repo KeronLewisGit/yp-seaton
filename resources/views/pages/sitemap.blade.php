@@ -1,5 +1,5 @@
 <x-layouts.site title="Site map" description="Every page on the Y.P. Seaton & Associates website.">
-    <x-page-header title="Site map" kicker="Site map" sheet="L-03" lead="Every public page on this website." />
+    <x-page-header photo="kingston-aerial" title="Site map" kicker="Site map" sheet="L-03" lead="Every public page on this website." />
     <section class="wrap mt-12 grid gap-10 md:mt-16 md:grid-cols-3">
         <div><h2 class="font-display text-lg font-bold">The firm</h2><ul class="mt-3 space-y-1">
             @foreach (['home' => 'Home', 'services' => 'Services', 'about' => 'About the firm', 'capability' => 'Capability statement', 'contact' => 'Contact', 'privacy' => 'Privacy notice', 'credits' => 'Photo credits'] as $r => $l)

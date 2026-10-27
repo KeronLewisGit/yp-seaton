@@ -29,5 +29,8 @@
         </div>
         <x-titleblock :fields="$fields" class="hidden lg:grid" />
     </div>
+    @if ($photo && ! in_array($photo, (array) yps('own_photos'), true))
+        <span class="photo-note" style="bottom: 2rem">Illustrative photo</span>
+    @endif
     <div class="armour on-sea" aria-hidden="true"></div>
 </section>

@@ -80,10 +80,39 @@ class PublicSiteTest extends TestCase
     {
         foreach (array_merge(['/', '/about', '/projects', '/services', '/capability-statement', '/contact', '/tenders', '/prequalification', '/careers'], Portfolio::all()->keys()->map(fn ($s) => '/projects/'.$s)->all()) as $url) {
             $html = strtolower(strip_tags((string) $this->get($url)->getContent()));
-            foreach (['arbitration', 'lawsuit', 'dispute', 'claim', 'sued', 'court', 'judgment'] as $word) {
+            foreach (['arbitration', 'lawsuit', 'litigation', 'dispute', 'claim', 'sued', 'court', 'judgment', 'privy council', 'contractor general', 'ocg'] as $word) {
                 $this->assertDoesNotMatchRegularExpression('/\\b'.$word.'/', $html, "{$url} mentions {$word}");
             }
         }
+        // Nor the proposal or the capability statement PDF that go to the firm.
+        $text = strtolower((string) file_get_contents(base_path('scripts/proposal/build.mjs')).file_get_contents(base_path('scripts/capability-pdf.mjs')));
+        foreach (['arbitration', 'lawsuit', 'litigation', 'dispute', 'privy council', 'contractor general'] as $word) {
+            $this->assertStringNotContainsString($word, $text, "the proposal mentions {$word}");
+        }
+    }
+
+    public function test_every_public_page_has_a_photo_and_stock_photos_are_labelled(): void
+    {
+        foreach (self::pages() as [$url]) {
+            if (in_array($url, ['/login', '/capability-statement'], true)) {
+                continue; // the sign-in screen and the printable one-pager
+            }
+            $html = (string) $this->get($url)->getContent();
+            $this->assertMatchesRegularExpression('/<img [^>]*src="[^"]+\/img\//', $html, "{$url} has no photograph");
+        }
+        $this->get('/thanks')->assertRedirect('/'); // no submission: covered by the form tests
+        $this->get('/')->assertSee('Illustrative photo');
+        $this->get('/projects')->assertSee('Illustrative photo');
+        $this->get('/services')->assertSee('Illustrative photo');
+        $this->get('/no-such-page')->assertNotFound()->assertSee('Illustrative photo');
+        // The Bank of Jamaica photo on /about is the firm's own: no label in the header.
+        $this->assertStringNotContainsString('Illustrative photo', (string) $this->get('/about')->getContent());
+    }
+
+    public function test_submit_buttons_read_correctly_without_javascript(): void
+    {
+        $html = (string) $this->get('/contact')->getContent();
+        $this->assertMatchesRegularExpression('/<span hidden[^>]*>Sending…<\/span>/u', $html);
     }
 
     public function test_legacy_squarespace_urls_redirect(): void

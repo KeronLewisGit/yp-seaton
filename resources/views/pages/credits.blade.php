@@ -1,5 +1,5 @@
 <x-layouts.site title="Photo credits" description="Sources and licences for the photographs on this website.">
-    <x-page-header title="Photo credits" kicker="Credits" sheet="L-02" lead="One photo is the firm's own. The others come from Wikimedia Commons and show the kind of work, not Y.P. Seaton projects." />
+    <x-page-header photo="palisadoes" title="Photo credits" kicker="Credits" sheet="L-02" lead="One photo is the firm's own. The others come from Wikimedia Commons and show the kind of work, not Y.P. Seaton projects." />
     <section class="wrap mt-12 md:mt-16">
         <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             @foreach (config('photo-credits') as $key => $c)

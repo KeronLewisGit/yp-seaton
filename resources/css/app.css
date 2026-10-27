@@ -322,6 +322,8 @@
     .demo-badge { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.2rem 0.55rem; border-radius: 3px; background: var(--surface-2); color: var(--ink-2); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
 
     /* Hero scrim: left-weighted on wide screens, bottom-weighted on phones. */
+    /* "Illustrative photo" note on a stock photograph (anything not in ypseaton.own_photos). */
+    .photo-note { position: absolute; right: 0.75rem; bottom: 0.5rem; z-index: 2; background: rgb(6 26 32 / 0.85); color: #fff; padding: 0.125rem 0.5rem; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.02em; }
     .hero-scrim { background: linear-gradient(90deg, rgb(6 26 32 / 0.95) 0%, rgb(6 26 32 / 0.82) 42%, rgb(6 26 32 / 0.35) 78%, rgb(6 26 32 / 0.15) 100%), linear-gradient(0deg, rgb(6 26 32 / 0.75) 0%, transparent 50%); }
     @media (max-width: 767px) { .hero-scrim { background: linear-gradient(0deg, rgb(6 26 32 / 0.97) 30%, rgb(6 26 32 / 0.8) 70%, rgb(6 26 32 / 0.6) 100%); } }
 

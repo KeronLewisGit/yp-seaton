@@ -51,7 +51,7 @@
                             data-label="{{ $b['hint'] }}" data-value="{{ $b['value'] }}" tabindex="0" @mouseenter="show($el)" @focus="show($el)" @blur="hide()"><title>{{ $b['hint'] }}: {{ $b['value'] }}</title></rect>
                     @endforeach
                 </svg>
-                <div x-show="tip" x-cloak class="pointer-events-none absolute -translate-x-1/2 -translate-y-full rounded bg-sea-900 px-2.5 py-1.5 text-xs font-semibold text-white shadow" :style="tip && `left:${tip.x}px; top:${tip.y - 6}px`"><span x-text="tip?.label"></span>: <span x-text="tip?.value"></span></div>
+                <div hidden :hidden="!tip" class="pointer-events-none absolute -translate-x-1/2 -translate-y-full rounded bg-sea-900 px-2.5 py-1.5 text-xs font-semibold text-white shadow" :style="tip && `left:${tip.x}px; top:${tip.y - 6}px`"><span x-text="tip?.label"></span>: <span x-text="tip?.value"></span></div>
                 <div class="mt-2 grid text-center text-xs text-ink-3" style="grid-template-columns: repeat({{ $n }}, minmax(0, 1fr))">
                     @foreach ($chart['bars'] as $b)<span class="num truncate">{{ $b['label'] }}</span>@endforeach
                 </div>

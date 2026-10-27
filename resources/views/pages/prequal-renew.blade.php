@@ -1,5 +1,5 @@
 <x-layouts.site title="Renew your certificates" :mobile-bar="false">
-    <x-page-header title="Renew your certificates" kicker="Prequalification" sheet="P-02" :lead="'Upload the renewed copies for '.$vendor->company_name.' ('.$vendor->reference.'). Only the certificates you upload are replaced.'" />
+    <x-page-header photo="paving" title="Renew your certificates" kicker="Prequalification" sheet="P-02" :lead="'Upload the renewed copies for '.$vendor->company_name.' ('.$vendor->reference.'). Only the certificates you upload are replaced.'" />
     <section class="wrap mt-12 max-w-3xl md:mt-16">
         <form method="POST" action="{{ $action }}" enctype="multipart/form-data" class="space-y-6" x-data="sendForm" @submit="submit">
             @csrf

@@ -1,5 +1,5 @@
 <x-layouts.site title="Thank you" :mobile-bar="false">
-    <x-page-header title="Thank you. We have it." :kicker="$kind" sheet="OK" lead="Your reference number is below. We have emailed it to you as well." />
+    <x-page-header photo="revetment" title="Thank you. We have it." :kicker="$kind" sheet="OK" lead="Your reference number is below. We have emailed it to you as well." />
     <section class="wrap mt-12 md:mt-16">
         <div class="max-w-xl">
             <x-titleblock :light="true" :cols="2" :fields="['Reference' => $reference, 'Received' => now()->format('j M Y, g:i a'), '*Submission' => $kind, '*Received by' => 'Y.P. Seaton & Associates, '.yps('address.street')]" />

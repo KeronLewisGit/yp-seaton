@@ -3,6 +3,7 @@
 <article {{ $attributes->merge(['class' => 'card-link sheet flex flex-col']) }} data-reveal>
     <div class="card-img relative aspect-[16/10] overflow-hidden border-b-[1.5px] border-ink">
         <x-photo :key="$project['photo']" :alt="$project['photo_alt']" sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw" class="h-full w-full" />
+        @unless (in_array($project['photo'], (array) yps('own_photos'), true))<span class="photo-note">Illustrative photo</span>@endunless
         <span class="absolute left-3 top-3 bg-sea-900/90 px-2 py-1 text-[0.75rem] font-bold uppercase tracking-[0.12em] text-white">{{ \App\Support\Portfolio::sectorLabel($project['sector']) }}</span>
     </div>
     <div class="flex flex-1 flex-col p-5">

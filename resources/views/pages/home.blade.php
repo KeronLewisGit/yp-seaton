@@ -22,6 +22,7 @@
             </div>
             <x-titleblock class="hidden lg:grid" :fields="['Founded' => (string) yps('founded'), 'Office' => 'Kingston 10', '*Contractor' => yps('name'), '*Telephone' => format_phone(yps('phone'))]" />
         </div>
+        <span class="photo-note" style="bottom: 2.75rem">Illustrative photo</span>
         <div class="armour tall on-sea" aria-hidden="true"></div>
     </section>
 

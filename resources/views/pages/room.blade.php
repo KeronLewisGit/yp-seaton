@@ -1,5 +1,5 @@
 <x-layouts.site :title="'Project documents: '.$room->name" :mobile-bar="false">
-    <x-page-header :title="$room->name" kicker="Project documents" sheet="D-01" :lead="'Shared with '.$room->client_name.' by Y.P. Seaton & Associates.'"
+    <x-page-header photo="concrete-pour" :title="$room->name" kicker="Project documents" sheet="D-01" :lead="'Shared with '.$room->client_name.' by Y.P. Seaton & Associates.'"
         :block="['Client' => $room->client_name, 'Documents' => (string) $room->documents->count(), '*Link valid until' => (isset($until) && $room->link_expires_at && $until->lt($room->link_expires_at) ? $until : $room->link_expires_at)?->format('j F Y')]" />
     <section class="wrap mt-12 md:mt-16">
         @if ($room->description)<p class="measure mb-8 whitespace-pre-line text-ink-2">{{ $room->description }}</p>@endif

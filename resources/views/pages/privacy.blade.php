@@ -1,5 +1,5 @@
 <x-layouts.site title="Privacy notice" description="How Y.P. Seaton & Associates handles the details sent through this website.">
-    <x-page-header title="Privacy notice" kicker="Privacy" sheet="L-01" lead="What we keep when you send a tender, a prequalification, a job application or a message, and why." />
+    <x-page-header photo="river-revetment" title="Privacy notice" kicker="Privacy" sheet="L-01" lead="What we keep when you send a tender, a prequalification, a job application or a message, and why." />
     <section class="wrap prose-copy measure mt-12 md:mt-16">
         <p>This website is run by {{ yps('name') }}, {{ yps('address.street') }}, {{ yps('address.city') }}, {{ yps('address.country') }}. It is written with the Data Protection Act, 2020 (Jamaica) in mind. Questions: <a href="mailto:{{ yps('email') }}">{{ yps('email') }}</a> or {{ format_phone(yps('phone')) }}.</p>
         <h2>What we collect</h2>
