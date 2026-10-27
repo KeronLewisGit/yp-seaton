@@ -87,9 +87,18 @@ class DocumentRoom extends Model
         return URL::temporarySignedRoute('rooms.show', $this->link_expires_at, ['room' => $this->public_id, 'key' => $this->access_key]);
     }
 
-    public function documentUrl(RoomDocument $document): string
+    /**
+     * A download link that expires with the share link the client opened ($until), never later,
+     * so a short link sent to one person does not hand out downloads that outlive it.
+     */
+    public function documentUrl(RoomDocument $document, ?\DateTimeInterface $until = null): string
     {
-        return URL::temporarySignedRoute('rooms.download', $this->link_expires_at ?? now()->addHour(), ['room' => $this->public_id, 'key' => $this->access_key, 'document' => $document->id]);
+        $expires = $this->link_expires_at ?? now()->addHour();
+        if ($until !== null && $until < $expires) {
+            $expires = $until;
+        }
+
+        return URL::temporarySignedRoute('rooms.download', $expires, ['room' => $this->public_id, 'key' => $this->access_key, 'document' => $document->id]);
     }
 
     public function linkIsLive(): bool

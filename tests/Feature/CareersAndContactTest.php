@@ -77,4 +77,21 @@ class CareersAndContactTest extends TestCase
         }
         $this->post('/contact', [])->assertStatus(429);
     }
+
+    public function test_a_closed_opening_gets_a_plain_message(): void
+    {
+        $closed = JobPosting::factory()->create(['closes_on' => today()->subDay()]);
+        $this->post('/careers/apply', $this->application(['job_posting_id' => $closed->id]))
+            ->assertSessionHasErrors(['job_posting_id' => 'That opening has closed. Choose another opening, or send a general application.']);
+    }
+
+    public function test_one_email_address_cannot_be_sent_confirmations_in_bulk(): void
+    {
+        Notification::fake();
+        for ($i = 0; $i < 10; $i++) {
+            $this->post('/contact', ['name' => 'A', 'email' => 'victim@example.com', 'phone' => '876555'.str_pad((string) $i, 4, '0', STR_PAD_LEFT), 'topic' => 'general', 'message' => 'Hello there, a message.'])->assertRedirect('/thanks');
+        }
+        $this->post('/contact', ['name' => 'A', 'email' => 'Victim@Example.com', 'topic' => 'general', 'message' => 'Hello there, a message.'])->assertStatus(429);
+        $this->post('/contact', ['name' => 'A', 'email' => 'someone@example.com', 'topic' => 'general', 'message' => 'Hello there, a message.'])->assertRedirect('/thanks');
+    }
 }

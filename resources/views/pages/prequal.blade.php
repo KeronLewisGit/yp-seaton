@@ -4,7 +4,7 @@
         lead="Register once with your company details, trades and current certificates. Our procurement team checks them, and we email you a renewal link before any certificate expires." />
 
     <section class="wrap mt-12 grid gap-12 md:mt-16 lg:grid-cols-[minmax(0,1fr)_20rem]">
-        <form method="POST" action="{{ route('prequal.store') }}" enctype="multipart/form-data" class="min-w-0 space-y-10" x-data="prequalForm(@js((string) old('type', 'subcontractor')))" @submit="submit">
+        <form method="POST" action="{{ route('prequal.store') }}" enctype="multipart/form-data" class="min-w-0 space-y-10" x-data="prequalForm(@js(input_string(old("type")) ?: "subcontractor"))" @submit="submit">
             @csrf
             <x-form-errors />
             <x-honeypot />
@@ -14,7 +14,7 @@
                     <legend class="label">What do you provide?</legend>
                     <div class="grid gap-2 sm:grid-cols-2">
                         @foreach ($types as $v => $t)
-                            <label class="choice"><input type="radio" name="type" value="{{ $v }}" x-model="type" @checked(old('type', 'subcontractor') === $v) required>{{ $t }}</label>
+                            <label class="choice"><input type="radio" name="type" value="{{ $v }}" x-model="type" @checked((input_string(old("type")) ?: "subcontractor") === $v) required>{{ $t }}</label>
                         @endforeach
                     </div>
                     <x-error for="type" />
@@ -66,12 +66,12 @@
                         <div class="grid gap-4 sm:grid-cols-2">
                             <div>
                                 <label for="num-{{ $kind->value }}" class="label">{{ $kind->numberLabel() }} <span class="opt">(optional)</span></label>
-                                <input id="num-{{ $kind->value }}" name="docs[{{ $kind->value }}][number]" value="{{ old($k.'.number') }}" class="input" maxlength="80">
+                                <input id="num-{{ $kind->value }}" name="docs[{{ $kind->value }}][number]" value="{{ input_string(old($k.'.number')) }}" class="input" maxlength="80">
                             </div>
                             @if ($kind->expires())
                                 <div>
                                     <label for="exp-{{ $kind->value }}" class="label">Expiry date</label>
-                                    <input id="exp-{{ $kind->value }}" type="date" name="docs[{{ $kind->value }}][expires_on]" value="{{ old($k.'.expires_on') }}" class="input" min="{{ today()->addDay()->format('Y-m-d') }}" @if($forAll) required @endif @error($k.'.expires_on') aria-invalid="true" @enderror>
+                                    <input id="exp-{{ $kind->value }}" type="date" name="docs[{{ $kind->value }}][expires_on]" value="{{ input_string(old($k.'.expires_on')) }}" class="input" min="{{ today()->addDay()->format('Y-m-d') }}" @if($forAll) required @endif @error($k.'.expires_on') aria-invalid="true" @enderror>
                                     <x-error :for="$k.'.expires_on'" />
                                 </div>
                             @endif

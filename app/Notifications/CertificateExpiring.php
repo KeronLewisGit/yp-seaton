@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\Vendor;
 use App\Models\VendorDocument;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -31,6 +32,6 @@ class CertificateExpiring extends Notification
         }
 
         return $mail->action('Upload the renewal', $this->renewUrl)
-            ->line('The link works for 30 days and needs no password.');
+            ->line('The link needs no password. It works for '.Vendor::RENEWAL_LINK_DAYS.' days, or until you have uploaded the renewed copies.');
     }
 }

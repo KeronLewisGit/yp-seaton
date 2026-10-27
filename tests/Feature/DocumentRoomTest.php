@@ -93,4 +93,24 @@ class DocumentRoomTest extends TestCase
         $this->assertFalse($room->linkIsLive());
         $this->assertNull($room->signedUrl());
     }
+
+    public function test_downloads_expire_with_the_link_the_client_opened(): void
+    {
+        Storage::fake('local');
+        $room = $this->room();
+        Storage::disk('local')->put('rooms/x/a.pdf', 'pdf');
+        $doc = $room->documents()->create(['title' => 'Programme', 'category' => 'programme', 'path' => 'rooms/x/a.pdf', 'original_name' => 'a.pdf', 'size' => 3]);
+
+        // A 90-day link went to the client; later a 7-day link went to someone else.
+        $long = $room->shareLink(90);
+        $short = URL::temporarySignedRoute('rooms.show', now()->addDays(7), ['room' => $room->public_id, 'key' => $room->access_key]);
+
+        preg_match('/href="([^"]+\/project-documents\/[^"]+\/'.$doc->id.'\?[^"]+)"/', (string) $this->get($short)->assertOk()->getContent(), $m);
+        $download = html_entity_decode($m[1]);
+        $this->get($download)->assertOk();
+
+        $this->travel(8)->days();
+        $this->get($download)->assertForbidden();
+        $this->get($long)->assertOk();
+    }
 }

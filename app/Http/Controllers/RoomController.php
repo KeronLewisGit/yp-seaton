@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DocumentRoom;
 use App\Models\RoomDocument;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -24,7 +25,8 @@ class RoomController extends Controller
         }
         $room->forceFill(['last_opened_at' => now()])->save();
 
-        return view('pages.room', ['room' => $room->load('documents')]);
+        // Downloads expire with the link that was opened (the `signed` middleware has checked it).
+        return view('pages.room', ['room' => $room->load('documents'), 'until' => Carbon::createFromTimestamp((int) $request->query('expires'), config('app.timezone'))]);
     }
 
     public function download(DocumentRoom $room, string $key, RoomDocument $document): StreamedResponse

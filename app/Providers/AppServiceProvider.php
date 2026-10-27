@@ -27,13 +27,19 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
 
-        // Showroom and office Wi-Fi is shared, so the per-network cap is generous;
-        // the tight cap is per phone number.
+        // Ministry and site-office networks are shared, so the per-network cap is generous;
+        // the tight caps are per phone number and per email address. Every submission emails
+        // a confirmation to the address given, so the email cap also stops the forms being used
+        // to send mail to strangers.
         RateLimiter::for('forms', function (Request $request) {
             $phone = preg_replace('/\D+/', '', input_string($request->input('phone')));
-            $limits = [Limit::perMinute(40)->by('ip|'.$request->ip())];
+            $email = strtolower(input_string($request->input('email')));
+            $limits = [Limit::perMinute(20)->by('ip|'.$request->ip()), Limit::perHour(60)->by('ip-hour|'.$request->ip())];
             if ($phone !== '') {
                 $limits[] = Limit::perMinute(5)->by('phone|'.$phone.'|'.$request->ip());
+            }
+            if ($email !== '') {
+                $limits[] = Limit::perHour(10)->by('email|'.$email);
             }
 
             return $limits;

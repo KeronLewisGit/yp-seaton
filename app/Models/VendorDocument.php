@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\DocumentKind;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
@@ -56,10 +57,22 @@ class VendorDocument extends Model
         return $this->belongsTo(User::class, 'verified_by');
     }
 
+    /**
+     * Current certificates with an expiry date: the ones the dashboard, the register and the
+     * reminders track. Supporting documents ("other") never expire, whatever date they carry.
+     *
+     * @param  Builder<self>  $query
+     */
+    public function scopeTracked(Builder $query): void
+    {
+        $query->whereNull('superseded_at')->whereNotNull('expires_on')
+            ->whereIn('kind', array_map(fn (DocumentKind $k) => $k->value, DocumentKind::certificates()));
+    }
+
     /** valid | expiring | expired (documents without an expiry are valid). */
     public function state(): string
     {
-        if ($this->expires_on === null) {
+        if ($this->expires_on === null || ! $this->kind->expires()) {
             return 'valid';
         }
         if ($this->expires_on->lt(today())) {

@@ -67,6 +67,7 @@ class StoreApplicationRequest extends FormRequest
     {
         return [
             'phone.regex' => 'Enter a phone number with its area code, for example (876) 555-0123.',
+            'job_posting_id.exists' => 'That opening has closed. Choose another opening, or send a general application.',
             'category.required' => 'Choose the type of work you are applying for.',
             'experience.required' => 'Choose how much experience you have.',
             'cv.required' => 'Engineering, quantity surveying and office roles need a CV (PDF or Word).',

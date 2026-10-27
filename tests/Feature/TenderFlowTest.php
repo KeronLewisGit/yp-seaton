@@ -118,4 +118,13 @@ class TenderFlowTest extends TestCase
         $this->assertSame('critical', $past->dueTone());
         $this->assertSame('Deadline passed', $past->dueLabel());
     }
+
+    public function test_junk_array_input_redisplays_the_form_instead_of_crashing(): void
+    {
+        $junk = $this->tender(['sector' => ['public'], 'entity_name' => ['x'], 'method' => ['open'], 'parish' => ['Kingston'], 'due_date' => ['x'], 'bid_security' => ['1']]);
+        $this->from('/tenders')->post('/tenders', $junk)->assertRedirect('/tenders')->assertSessionHasErrors(['sector', 'entity_name', 'method', 'due_date']);
+        // Following the redirect re-renders the form with the junk as old input.
+        $this->followingRedirects()->from('/tenders')->post('/tenders', $junk)->assertOk()->assertSee('Please check');
+        $this->assertSame(0, Tender::count());
+    }
 }

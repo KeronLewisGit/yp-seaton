@@ -72,7 +72,14 @@ class VendorController extends Controller
             'expires_on' => [$document->kind->expires() ? 'required' : 'nullable', 'date_format:Y-m-d'],
             'number' => ['nullable', 'string', 'max:80'],
         ]);
-        $document->fill($data + ['verified_at' => now(), 'verified_by' => $user->id])->save();
+        if (! $document->kind->expires()) {
+            $data['expires_on'] = null; // supporting documents are not tracked for expiry
+        }
+        $document->fill($data + ['verified_at' => now(), 'verified_by' => $user->id]);
+        if ($document->isDirty('expires_on')) {
+            $document->reminded_at = null; // a corrected expiry gets its own reminder
+        }
+        $document->save();
         $vendor->log("Checked the {$document->kind->label()}".($document->expires_on ? ', valid to '.$document->expires_on->format('j M Y') : '').'.', 'status', $user);
 
         return back()->with('status', $document->kind->short().' marked as checked.');

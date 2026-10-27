@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\URL;
 
 /**
  * A subcontractor or supplier applying for (or holding) prequalification.
@@ -58,6 +59,9 @@ class Vendor extends Model implements Submission
 
     /** Certificates expiring within this many days are flagged (and the vendor is reminded). */
     public const int EXPIRY_WARNING_DAYS = 30;
+
+    /** How long the signed link in a renewal reminder works. */
+    public const int RENEWAL_LINK_DAYS = 30;
 
     public const array FILE_TYPES = ['pdf', 'jpg', 'jpeg', 'png'];
 
@@ -151,7 +155,32 @@ class Vendor extends Model implements Submission
 
     public function nextExpiry(): ?Carbon
     {
-        return $this->currentDocuments->filter(fn (VendorDocument $d) => $d->expires_on !== null)->min('expires_on');
+        return $this->currentDocuments->filter(fn (VendorDocument $d) => $d->expires_on !== null && $d->kind->expires())->min('expires_on');
+    }
+
+    /**
+     * The signed link a renewal reminder carries. It names the certificates it was sent for and
+     * stops working once all of them have been replaced, or after RENEWAL_LINK_DAYS.
+     *
+     * @param  iterable<VendorDocument>  $documents
+     */
+    public function renewalUrl(iterable $documents, ?\DateTimeInterface $until = null): string
+    {
+        $ids = collect($documents)->map(fn (VendorDocument $d) => $d->id)->sort()->implode('.');
+
+        return URL::temporarySignedRoute('prequal.renew', $until ?? now()->addDays(self::RENEWAL_LINK_DAYS), ['vendor' => $this, 'for' => $ids]);
+    }
+
+    /**
+     * Of the certificates a renewal link was sent for ("12.15"), those still current, i.e. not yet renewed.
+     *
+     * @return Collection<int, VendorDocument>
+     */
+    public function awaitingRenewal(string $for): Collection
+    {
+        $ids = array_values(array_filter(array_map('intval', explode('.', $for))));
+
+        return $ids === [] ? new Collection : $this->documents()->whereIn('id', $ids)->whereNull('superseded_at')->get();
     }
 
     public function moveTo(VendorStatus $status): bool
@@ -173,8 +202,8 @@ class Vendor extends Model implements Submission
      */
     public function scopeNeedsRenewal(Builder $query): void
     {
-        $query->where('status', VendorStatus::Approved)->whereHas('documents', fn (Builder $d) => $d->whereNull('superseded_at')
-            ->whereNotNull('expires_on')->whereDate('expires_on', '<=', today()->addDays(self::EXPIRY_WARNING_DAYS)));
+        $query->where('status', VendorStatus::Approved)->whereHas('documents', fn (Builder $d) => $d->tracked()
+            ->whereDate('expires_on', '<=', today()->addDays(self::EXPIRY_WARNING_DAYS)));
     }
 
     /**

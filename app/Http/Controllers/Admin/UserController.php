@@ -20,13 +20,15 @@ class UserController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        // Lower-case first, so the unique check sees the address as it will be stored.
+        $request->merge(['email' => strtolower(input_string($request->input('email')))]);
         $data = $request->validate([
             'name' => ['required', 'string', 'max:120'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')],
             'role' => ['required', Rule::enum(Role::class)],
             'password' => ['required', 'string', 'min:10'],
         ]);
-        $user = User::create(['email' => strtolower($data['email'])] + $data + ['active' => true]);
+        $user = User::create($data + ['active' => true]);
 
         return back()->with('status', "{$user->name} can now sign in.");
     }

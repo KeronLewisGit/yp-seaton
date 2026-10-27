@@ -65,11 +65,11 @@
             <form method="POST" action="{{ route('admin.rooms.update', $room) }}" class="a-card space-y-3 p-5">
                 @csrf @method('PATCH')
                 <h2 class="font-semibold">Room details</h2>
-                <div><label for="e-name" class="mb-1 block text-sm text-ink-2">Project</label><input id="e-name" name="name" value="{{ old('name', $room->name) }}" class="a-input w-full" required maxlength="160"></div>
-                <div><label for="e-client" class="mb-1 block text-sm text-ink-2">Client organisation</label><input id="e-client" name="client_name" value="{{ old('client_name', $room->client_name) }}" class="a-input w-full" required maxlength="160"></div>
-                <div><label for="e-contact" class="mb-1 block text-sm text-ink-2">Client contact</label><input id="e-contact" name="client_contact" value="{{ old('client_contact', $room->client_contact) }}" class="a-input w-full" maxlength="120"></div>
-                <div><label for="e-email" class="mb-1 block text-sm text-ink-2">Contact email</label><input id="e-email" type="email" name="client_email" value="{{ old('client_email', $room->client_email) }}" class="a-input w-full"></div>
-                <div><label for="e-desc" class="mb-1 block text-sm text-ink-2">Note to the client</label><textarea id="e-desc" name="description" class="a-input">{{ old('description', $room->description) }}</textarea></div>
+                <div><label for="e-name" class="mb-1 block text-sm text-ink-2">Project</label><input id="e-name" name="name" value="{{ input_string(old('name', $room->name)) }}" class="a-input w-full" required maxlength="160"></div>
+                <div><label for="e-client" class="mb-1 block text-sm text-ink-2">Client organisation</label><input id="e-client" name="client_name" value="{{ input_string(old('client_name', $room->client_name)) }}" class="a-input w-full" required maxlength="160"></div>
+                <div><label for="e-contact" class="mb-1 block text-sm text-ink-2">Client contact</label><input id="e-contact" name="client_contact" value="{{ input_string(old('client_contact', $room->client_contact)) }}" class="a-input w-full" maxlength="120"></div>
+                <div><label for="e-email" class="mb-1 block text-sm text-ink-2">Contact email</label><input id="e-email" type="email" name="client_email" value="{{ input_string(old('client_email', $room->client_email)) }}" class="a-input w-full"></div>
+                <div><label for="e-desc" class="mb-1 block text-sm text-ink-2">Note to the client</label><textarea id="e-desc" name="description" class="a-input">{{ input_string(old('description', $room->description)) }}</textarea></div>
                 <button class="a-btn a-btn-ghost">Save details</button>
             </form>
             @include('admin.partials.timeline', ['notes' => $room->notes, 'action' => null])

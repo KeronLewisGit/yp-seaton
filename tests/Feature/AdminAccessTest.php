@@ -208,6 +208,67 @@ class AdminAccessTest extends TestCase
         $this->actingAs($this->staff(Role::Hr))->post(route('admin.users.store'), [])->assertForbidden();
     }
 
+    public function test_a_refused_assignment_leaves_the_status_unchanged(): void
+    {
+        $est = $this->staff(Role::Estimating);
+        $hr = $this->staff(Role::Hr);
+        $tender = Tender::factory()->create();
+
+        $this->actingAs($est)->patch(route('admin.tenders.update', $tender), ['status' => 'pricing', 'assigned_to' => $hr->id])->assertSessionHasErrors('assigned_to');
+        $this->assertSame(TenderStatus::New, $tender->refresh()->status);
+        $this->assertFalse($tender->notes()->where('kind', 'status')->exists(), 'no timeline entry for a change that was not saved');
+    }
+
+    public function test_correcting_a_certificate_expiry_rearms_its_reminder(): void
+    {
+        $vendor = Vendor::factory()->approved()->withCertificates(10)->create();
+        $doc = $vendor->documents()->where('kind', 'tcc')->firstOrFail();
+        $doc->update(['reminded_at' => now()]);
+        $this->actingAs($this->staff(Role::Procurement));
+
+        // Checked with the same date: the reminder already sent still counts.
+        $this->patch(route('admin.vendors.verify', [$vendor, $doc]), ['expires_on' => $doc->expires_on?->format('Y-m-d')])->assertRedirect();
+        $this->assertNotNull($doc->refresh()->reminded_at);
+
+        // A new date gets its own reminder when it comes round.
+        $this->patch(route('admin.vendors.verify', [$vendor, $doc]), ['expires_on' => today()->addYear()->format('Y-m-d')])->assertRedirect();
+        $this->assertNull($doc->refresh()->reminded_at);
+    }
+
+    public function test_supporting_documents_are_checked_without_an_expiry(): void
+    {
+        $vendor = Vendor::factory()->withCertificates()->create();
+        $other = $vendor->documents()->create(['kind' => 'other', 'path' => 'vendors/x/other.pdf', 'original_name' => 'nis.pdf', 'mime' => 'application/pdf', 'size' => 10]);
+        $this->actingAs($this->staff(Role::Procurement))->patch(route('admin.vendors.verify', [$vendor, $other]), ['expires_on' => '2020-01-01'])->assertRedirect();
+        $this->assertNull($other->refresh()->expires_on);
+        $this->assertNotNull($other->verified_at);
+    }
+
+    public function test_a_posting_titled_apply_does_not_hide_behind_the_application_form(): void
+    {
+        $this->actingAs($this->staff(Role::Hr));
+        $this->post(route('admin.jobs.store'), ['title' => 'Apply', 'category' => 'trades', 'employment_type' => 'project', 'status' => 'open', 'location' => 'Kingston', 'openings' => 1, 'summary' => 'Any trade.'])->assertRedirect();
+        $job = JobPosting::sole();
+        $this->assertNotSame('apply', $job->slug);
+        $this->get(route('careers.show', $job))->assertOk()->assertSee('Any trade.');
+    }
+
+    public function test_staff_email_is_unique_whatever_the_case(): void
+    {
+        $admin = $this->staff(Role::Admin);
+        $existing = $this->staff(Role::Hr);
+        $this->actingAs($admin)->post(route('admin.users.store'), ['name' => 'Dup', 'email' => strtoupper($existing->email), 'role' => 'hr', 'password' => 'long-password'])
+            ->assertSessionHasErrors('email');
+        $this->assertSame(1, User::where('email', $existing->email)->count());
+    }
+
+    public function test_admin_forms_survive_junk_array_input(): void
+    {
+        $this->actingAs($this->staff(Role::Admin));
+        $this->from(route('admin.rooms.index'))->post(route('admin.rooms.store'), ['name' => ['x'], 'client_name' => ['y']])->assertSessionHasErrors(['name', 'client_name']);
+        $this->get(route('admin.rooms.index'))->assertOk();
+    }
+
     public function test_enquiry_status(): void
     {
         $e = Enquiry::create(['topic' => 'general', 'name' => 'A', 'email' => 'a@example.com', 'message' => 'Hello there team']);

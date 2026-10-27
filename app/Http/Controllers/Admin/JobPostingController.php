@@ -37,7 +37,7 @@ class JobPostingController extends Controller
     {
         Gate::authorize('create', JobPosting::class);
         $data = $this->validated($request);
-        $job = JobPosting::create($data + ['slug' => Slug::unique(JobPosting::class, $data['title'], 'job')]);
+        $job = JobPosting::create($data + ['slug' => Slug::unique(JobPosting::class, $data['title'], 'job', ['apply'])]);
 
         return to_route('admin.jobs.index')->with('status', "“{$job->title}” saved.");
     }

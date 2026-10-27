@@ -1,5 +1,5 @@
 @props(['name', 'label', 'options', 'value' => null, 'cols' => 'sm:grid-cols-2', 'required' => false])
-@php($current = (string) old($name, $value))
+@php($current = input_string(old($name, $value)))
 <fieldset>
     <legend class="label">{{ $label }}</legend>
     <div class="grid gap-2 {{ $cols }}">

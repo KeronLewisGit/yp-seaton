@@ -98,7 +98,7 @@ class DashboardController extends Controller
     /** @return array<string, mixed> */
     private function prequalHeadline(): array
     {
-        $docs = VendorDocument::with('vendor')->whereNull('superseded_at')->whereNotNull('expires_on')
+        $docs = VendorDocument::with('vendor')->tracked()
             ->whereDate('expires_on', '<=', today()->addDays(Vendor::EXPIRY_WARNING_DAYS))
             ->whereHas('vendor', fn ($q) => $q->where('status', VendorStatus::Approved))->orderBy('expires_on')->get();
         $expired = $docs->filter(fn (VendorDocument $d) => $d->state() === 'expired')->count();
@@ -159,7 +159,7 @@ class DashboardController extends Controller
     private function expiryChart(): array
     {
         $start = today()->startOfMonth();
-        $dates = VendorDocument::whereNull('superseded_at')->whereBetween('expires_on', [$start, $start->copy()->addMonths(12)])
+        $dates = VendorDocument::tracked()->whereBetween('expires_on', [$start, $start->copy()->addMonths(12)])
             ->whereHas('vendor', fn ($q) => $q->where('status', VendorStatus::Approved))->pluck('expires_on');
         $bars = [];
         for ($i = 0; $i < 12; $i++) {

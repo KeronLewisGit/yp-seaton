@@ -64,15 +64,18 @@ class TenderController extends Controller
             'assigned_to' => ['sometimes', 'nullable', 'integer', Rule::exists('users', 'id')->where('active', true)],
         ]);
 
+        // Check the assignee before changing anything, so a refused assignment leaves no half-saved status.
+        $assignTo = isset($data['assigned_to']) ? (int) $data['assigned_to'] : null;
+        $reassign = array_key_exists('assigned_to', $data) && $tender->assigned_to !== $assignTo;
+        $assignee = $reassign && $assignTo ? User::find($assignTo) : null;
+        if ($assignee && ! $assignee->works(Area::Tenders)) {
+            return back()->withErrors(['assigned_to' => "{$assignee->name} works in {$assignee->role->label()} and can't see tenders."]);
+        }
+
         if (isset($data['status']) && $tender->moveTo($status = TenderStatus::from($data['status']))) {
             $tender->log('Status changed to '.$status->label().'.', 'status', $user);
         }
-        $assignTo = isset($data['assigned_to']) ? (int) $data['assigned_to'] : null;
-        if (array_key_exists('assigned_to', $data) && $tender->assigned_to !== $assignTo) {
-            $assignee = $assignTo ? User::find($assignTo) : null;
-            if ($assignee && ! $assignee->works(Area::Tenders)) {
-                return back()->withErrors(['assigned_to' => "{$assignee->name} works in {$assignee->role->label()} and can't see tenders."]);
-            }
+        if ($reassign) {
             $tender->assigned_to = $assignee?->id;
             $tender->log($assignee ? "Assigned to {$assignee->name}." : 'Unassigned.', 'assign', $user);
         }

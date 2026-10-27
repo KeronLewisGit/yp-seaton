@@ -8,7 +8,6 @@ use App\Models\VendorDocument;
 use App\Notifications\CertificateExpiring;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\URL;
 
 /**
  * Daily: emails each prequalified vendor whose TCC, registration or insurance expires within
@@ -22,7 +21,7 @@ class RemindExpiringCertificates extends Command
 
     public function handle(): int
     {
-        $docs = VendorDocument::with('vendor')->whereNull('superseded_at')->whereNull('reminded_at')->whereNotNull('expires_on')
+        $docs = VendorDocument::with('vendor')->tracked()->whereNull('reminded_at')
             ->whereDate('expires_on', '<=', today()->addDays(Vendor::EXPIRY_WARNING_DAYS))
             ->whereHas('vendor', fn ($q) => $q->where('status', VendorStatus::Approved))->get();
 
@@ -34,7 +33,7 @@ class RemindExpiringCertificates extends Command
             if ($this->option('dry-run')) {
                 continue;
             }
-            $url = URL::temporarySignedRoute('prequal.renew', now()->addDays(30), ['vendor' => $vendor]);
+            $url = $vendor->renewalUrl($group);
             // Sent straight away: a console run has no response to defer behind.
             Notification::route('mail', [$vendor->email])->notify(new CertificateExpiring($group->values(), $url));
             VendorDocument::whereIn('id', $group->pluck('id'))->update(['reminded_at' => now()]);
