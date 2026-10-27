@@ -12,7 +12,7 @@
             <p class="hint">Text from the firm's own website, {{ $about['source'] }}.</p>
         </div>
         <aside class="space-y-6">
-            <x-titleblock :light="true" :cols="1" :fields="['Company' => yps('name'), 'Founded' => (string) yps('founded'), 'Office' => yps('address.street').', '.yps('address.city'), $principal['title'] => $principal['name'].' ('.$principal['known_as'].')']" />
+            <x-titleblock :light="true" :cols="1" :fields="['Company' => yps('name'), 'Founded' => (string) yps('founded'), 'Office' => yps('address.street').', '.yps('address.city'), $principal['title'] => $principal['name']]" />
             <p class="hint">{{ $principal['name'] }} is named as {{ $principal['title'] }} by the {{ $principal['source']['label'] }}, {{ $principal['source']['date'] }}.</p>
         </aside>
     </section>

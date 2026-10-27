@@ -38,7 +38,6 @@ return [
     'hours' => [
         ['Monday to Thursday', '8:30 am – 5:30 pm'],
         ['Friday', '8:30 am – 4:30 pm'],
-        ['Saturday, Sunday and public holidays', 'Closed'],
     ],
 
     // Concept preview: banner + noindex until the client signs off.
@@ -63,15 +62,17 @@ return [
     'capability_pdf' => 'YP-Seaton-Capability-Statement.pdf',
 
     /*
-    | About. The paragraphs are the firm's own words from its 2022 website, lightly trimmed;
-    | the principal's name and title are as the UDC published them in April 2015.
+    | About. The intro is a summary written for this site from the firm's history and the
+    | contracts below. The paragraphs are the firm's own words from its 2015–2022 website and
+    | the mission from its 2015–2018 website, lightly trimmed. The principal's name and title
+    | are as the UDC published them in April 2015.
     */
     'about' => [
         'intro' => 'From small beginnings in 1969 as electrical and mechanical engineering contractors, Y.P. Seaton & Associates grew into a general civil engineering and building contractor. Today its work for government agencies includes shoreline protection, sewage conveyance, housing infrastructure, irrigation and road works.',
         'paragraphs' => [
             'We take pride in quality work and in meeting deadlines, and we have managed this through a highly skilled workforce that has engineered our growth and remains committed to keeping us strong, efficient and viable.',
             'We have developed a solid performance reputation in housing development and construction, road building, water works, electrical and mechanical contracting, general construction and the provision of goods and services.',
-            'Through strict adherence to our commitment to leadership in technology, performance and service, we have played a part in the growth of Jamaica\'s building and construction industry, completing projects on time and within budget.',
+            'Through strict adherence to our commitment to leadership in technology, performance and service, we have played a leading role in the growth and development of Jamaica\'s building and construction industry, applying the technology and expertise needed to complete projects on time and within budget.',
         ],
         'mission' => 'Maintain our position as one of the leading building and construction firms in Jamaica, displaying at all times an unswerving commitment to quality performance and excellent service. Ensure a high level of satisfaction for all our stakeholders. Provide efficient and cost-effective service to our clients. Provide quality, aesthetically pleasing low-cost and middle-income housing solutions which enhance the social, environmental and economic conditions of communities. We develop with emphasis on the training and development of our young people.',
         'source' => 'ypseaton.com, 2015–2022 (Wayback Machine)',
@@ -79,7 +80,6 @@ return [
 
     'principal' => [
         'name' => 'York Seaton',
-        'known_as' => 'Y.P. Seaton',
         'title' => 'Managing Director',
         'source' => ['label' => 'Urban Development Corporation', 'url' => 'https://udcja.com/udc-signs-contract-for-historic-capital-expenditure-project-in-caymanas-estate-st-catherine/', 'date' => '28 April 2015'],
     ],
@@ -93,15 +93,15 @@ return [
             'title' => 'Shoreline and coastal protection',
             'sector' => 'coastal',
             'icon' => 'waves',
-            'summary' => 'Rock revetments, composite revetments and concrete walls that protect roads, runways and communities from erosion, overtopping and storm surge.',
-            'items' => ['Rock and composite revetments', 'Sea walls and wave-return walls', 'Retaining walls on coastal roads', 'Supply and placement of armour stone'],
+            'summary' => 'Composite revetments, retaining walls and concrete walls that protect roads, runways and communities from erosion, wave action, overtopping and hurricane damage.',
+            'items' => ['Shoreline protection works', 'Composite revetments', 'Concrete walls to reduce overtopping', 'Retaining walls on coastal roads', 'Supply of materials for shoreline construction'],
         ],
         'water' => [
             'title' => 'Water, sewerage and irrigation',
             'sector' => 'water',
             'icon' => 'droplet',
             'summary' => 'Force mains, sewage lift stations, septic and biodigester tanks, irrigation systems and storm-water drainage for public agencies and developers.',
-            'items' => ['Sewage conveyance: force mains and lift stations', 'Septic, biodigester and chlorination chambers', 'Irrigation and water supply systems', 'Storm-water systems and drainage design', 'Dams and river works'],
+            'items' => ['Sewage conveyance: force mains and lift stations', 'Septic, biodigester and chlorination chambers', 'Irrigation and water supply systems', 'Storm-water systems and drainage design'],
         ],
         'housing' => [
             'title' => 'Housing and infrastructure development',
@@ -114,15 +114,15 @@ return [
             'title' => 'Roads, retaining walls and drainage',
             'sector' => 'roads',
             'icon' => 'road',
-            'summary' => 'Road construction, repair and maintenance, with the retaining walls, gullies and culverts that keep hillside roads open after heavy rain.',
-            'items' => ['Road construction, repair and maintenance', 'Retaining walls and slope protection', 'Gully inverts, drains and culverts'],
+            'summary' => 'Road construction, repair and maintenance, with the retaining walls and gully inverts that keep hillside roads open after heavy rain.',
+            'items' => ['Road construction, repair and maintenance', 'Retaining walls', 'Gully inverts and drains'],
         ],
         'building' => [
             'title' => 'General building construction',
             'sector' => null,
             'icon' => 'building',
             'summary' => 'Residential and commercial buildings for private and public clients, including drawings prepared and submitted for approval, and estimates.',
-            'items' => ['Residential and commercial buildings', 'Drawings prepared and submitted for approval', 'Estimates and bills of quantities'],
+            'items' => ['Residential and commercial buildings', 'Drawings prepared and submitted for approval', 'Estimates'],
         ],
         'electrical' => [
             'title' => 'Electrical and mechanical engineering',
@@ -148,14 +148,14 @@ return [
         'nmia-shoreline-protection' => [
             'title' => 'Shoreline protection, Runway 30 end, Norman Manley International Airport',
             'client' => 'Airports Authority of Jamaica',
-            'location' => 'Port Royal Road, Palisadoes',
+            'location' => 'Port Royal Road',
             'parish' => 'Kingston',
             'sector' => 'coastal',
             'year' => 2021,
             'year_label' => '2021 (Cabinet approval)',
             'value' => 555.9,
             'value_label' => 'Contract sum authorised by Cabinet',
-            'status' => 'Contract awarded; works under way November 2021',
+            'status' => 'Contract authorised by Cabinet, April 2021; works under way November 2021',
             'summary' => 'Civil works for 358 metres of shoreline protection at the eastern end of the runway, protecting the shoreline, Port Royal Road and the runway from erosion, wave action and hurricane damage.',
             'scope' => [
                 '358 m of shoreline protection at the Runway 30 end',
@@ -197,8 +197,8 @@ return [
         ],
         'whitehall-phase-2' => [
             'title' => 'Whitehall Phase 2 housing infrastructure',
-            'client' => 'Government of Jamaica',
-            'location' => 'Whitehall, Negril',
+            'client' => 'Housing Agency of Jamaica',
+            'location' => 'Whitehall',
             'parish' => 'Westmoreland',
             'sector' => 'housing',
             'year' => 2009,
@@ -278,10 +278,11 @@ return [
             'value' => 47.7,
             'value_label' => 'Approximate contract sum as reported by JIS',
             'status' => 'Contract approved by Cabinet, May 2014',
-            'summary' => 'Construction of a biodigester septic tank and chlorination chamber for the relocation of sugar-estate barracks residents.',
+            'summary' => 'Construction of a biodigester septic tank and chlorination chamber, with pipe works, manholes and a reed bed, for the Barracks Relocation Project of the Sugar Transformation Programme.',
             'scope' => [
                 'Biodigester septic tank',
                 'Chlorination chamber',
+                'Pipe works, manholes and a reed bed',
             ],
             'photo' => 'concrete-pour',
             'photo_alt' => 'Concrete pump booms and mixer trucks pouring a foundation slab',
@@ -297,11 +298,11 @@ return [
             'parish' => 'St. James',
             'sector' => 'water',
             'year' => 2004,
-            'year_label' => '2004 (contract announced)',
+            'year_label' => '2004 (Cabinet approval)',
             'value' => 23.8,
             'value_label' => 'Contract sum as reported by JIS',
-            'status' => 'Contract announced February 2004',
-            'summary' => 'Construction of an irrigation system at Seven Rivers, announced by the Minister of Water and Housing among new irrigation systems for rural Jamaica.',
+            'status' => 'Contract approved by Cabinet, February 2004',
+            'summary' => 'Construction of an irrigation system at Seven Rivers, one of three irrigation contracts approved by Cabinet and announced by the Minister of Water and Housing among new irrigation systems for rural Jamaica.',
             'scope' => [
                 'Irrigation system construction',
             ],
@@ -382,6 +383,8 @@ return [
         'paving' => ['w' => 1920, 'h' => 1080],
         'river-revetment' => ['w' => 1920, 'h' => 1440],
     ],
+    // The firm's own photographs. Every other photo is illustrative and is labelled so.
+    'own_photos' => ['boj'],
     'og_photo' => 'revetment',
 
     // Pages on the firm's old WordPress site (2014–2019), still linked from directories.
