@@ -46,7 +46,7 @@ class PrequalFlowTest extends TestCase
         $this->post('/prequalification', $this->form())->assertRedirect('/thanks');
 
         $vendor = Vendor::sole();
-        $this->assertSame('PQ-'.now()->format('y').'-00001', $vendor->reference);
+        $this->assertSame(sprintf('PQ-%s-%05d', now()->format('y'), $vendor->id), $vendor->reference);
         $this->assertSame('123456789', $vendor->trn);
         $this->assertSame(VendorStatus::New, $vendor->status);
         $this->assertNotNull($vendor->consented_at);

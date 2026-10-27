@@ -32,7 +32,7 @@ class CareersAndContactTest extends TestCase
         config(['ypseaton.notify.careers' => 'hr@example.com']);
         $this->post('/careers/apply', $this->application())->assertRedirect('/thanks');
         $a = JobApplication::sole();
-        $this->assertSame('JA-'.now()->format('y').'-00001', $a->reference);
+        $this->assertSame(sprintf('JA-%s-%05d', now()->format('y'), $a->id), $a->reference);
         $this->assertNull($a->cv_path);
         Notification::assertSentOnDemand(NewSubmission::class, fn ($n, $c, $to) => $to->routes['mail'] === ['hr@example.com']);
     }

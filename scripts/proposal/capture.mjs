@@ -126,7 +126,7 @@ function packBlocks(blocks, maxH, docH) {
 const RATIO = 1.08; // slice height ÷ width that fits a letter page beneath the heading and bullets
 
 async function shoot(name, url, { width = 1440, height = 900, fullPage = true, mobile = false } = {}) {
-  await page.setViewport({ width, height, deviceScaleFactor: mobile ? 2 : 1.25, isMobile: mobile, hasTouch: mobile });
+  await page.setViewport({ width, height, deviceScaleFactor: mobile ? 1.5 : 1, isMobile: mobile, hasTouch: mobile });
   await page.goto(BASE + url, { waitUntil: 'networkidle0' });
   await settle();
   const files = []; const labels = [];

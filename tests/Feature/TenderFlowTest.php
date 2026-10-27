@@ -48,7 +48,7 @@ class TenderFlowTest extends TestCase
 
         $res->assertRedirect('/thanks');
         $tender = Tender::sole();
-        $this->assertSame('TI-'.now()->format('y').'-00001', $tender->reference);
+        $this->assertSame(sprintf('TI-%s-%05d', now()->format('y'), $tender->id), $tender->reference);
         $this->assertSame(TenderStatus::New, $tender->status);
         $this->assertSame('procurement@example.org', $tender->email);
         $this->assertTrue($tender->bid_security);

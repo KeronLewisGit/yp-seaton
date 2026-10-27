@@ -217,7 +217,7 @@ function screenPages(sec, [key, title, bullets]) {
     <section class="page shot">
       <header class="shot-head">
         <div><p class="eyebrow">${esc(sec.title)}${pi ? ' · continued' : ''}</p><h2>${esc(title)}</h2></div>
-        <p class="url">${esc(c.url)}</p>
+        <p class="url">${esc(c.url.split('?')[0].replace(/^(\/project-documents\/)[^/]+\/.+$/, '$1…'))}</p>
       </header>
       ${p.bullets ? `<ul class="bullets">${bullets.map((b) => `<li>${esc(b)}</li>`).join('')}</ul>` : ''}
       ${p.items.map((i) => `<figure><img style="width:${(p.scale * 100).toFixed(1)}%" src="${img(c.chunks[i])}" alt="${esc(title)}">${caption(key, i, c)}</figure>`).join('')}
