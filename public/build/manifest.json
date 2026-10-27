@@ -1,0 +1,89 @@
+{
+  "_epilogue-500-normal-BNODJPoZ.woff2": {
+    "file": "assets/epilogue-500-normal-BNODJPoZ.woff2",
+    "src": "_epilogue-500-normal-BNODJPoZ.woff2"
+  },
+  "_epilogue-500-normal-dtyNCBzt.woff": {
+    "file": "assets/epilogue-500-normal-dtyNCBzt.woff",
+    "src": "_epilogue-500-normal-dtyNCBzt.woff"
+  },
+  "_epilogue-700-normal-C9Nmj9Br.woff": {
+    "file": "assets/epilogue-700-normal-C9Nmj9Br.woff",
+    "src": "_epilogue-700-normal-C9Nmj9Br.woff"
+  },
+  "_epilogue-700-normal-Z7dFEtVj.woff2": {
+    "file": "assets/epilogue-700-normal-Z7dFEtVj.woff2",
+    "src": "_epilogue-700-normal-Z7dFEtVj.woff2"
+  },
+  "_epilogue-800-normal-DwS9Rjcn.woff2": {
+    "file": "assets/epilogue-800-normal-DwS9Rjcn.woff2",
+    "src": "_epilogue-800-normal-DwS9Rjcn.woff2"
+  },
+  "_epilogue-800-normal-gEU229a3.woff": {
+    "file": "assets/epilogue-800-normal-gEU229a3.woff",
+    "src": "_epilogue-800-normal-gEU229a3.woff"
+  },
+  "_fonts-B1p0FFxD.css": {
+    "file": "assets/fonts-B1p0FFxD.css",
+    "src": "_fonts-B1p0FFxD.css"
+  },
+  "_libre-franklin-400-normal-B5qoBLOl.woff": {
+    "file": "assets/libre-franklin-400-normal-B5qoBLOl.woff",
+    "src": "_libre-franklin-400-normal-B5qoBLOl.woff"
+  },
+  "_libre-franklin-400-normal-DNAyL8lK.woff2": {
+    "file": "assets/libre-franklin-400-normal-DNAyL8lK.woff2",
+    "src": "_libre-franklin-400-normal-DNAyL8lK.woff2"
+  },
+  "_libre-franklin-500-normal-BQKhRarp.woff": {
+    "file": "assets/libre-franklin-500-normal-BQKhRarp.woff",
+    "src": "_libre-franklin-500-normal-BQKhRarp.woff"
+  },
+  "_libre-franklin-500-normal-Cbta7Jiu.woff2": {
+    "file": "assets/libre-franklin-500-normal-Cbta7Jiu.woff2",
+    "src": "_libre-franklin-500-normal-Cbta7Jiu.woff2"
+  },
+  "_libre-franklin-600-normal-BBKMvfE-.woff2": {
+    "file": "assets/libre-franklin-600-normal-BBKMvfE-.woff2",
+    "src": "_libre-franklin-600-normal-BBKMvfE-.woff2"
+  },
+  "_libre-franklin-600-normal-DjS29Py2.woff": {
+    "file": "assets/libre-franklin-600-normal-DjS29Py2.woff",
+    "src": "_libre-franklin-600-normal-DjS29Py2.woff"
+  },
+  "_libre-franklin-700-normal-CP58KLQO.woff": {
+    "file": "assets/libre-franklin-700-normal-CP58KLQO.woff",
+    "src": "_libre-franklin-700-normal-CP58KLQO.woff"
+  },
+  "_libre-franklin-700-normal-TBBKpXzk.woff2": {
+    "file": "assets/libre-franklin-700-normal-TBBKpXzk.woff2",
+    "src": "_libre-franklin-700-normal-TBBKpXzk.woff2"
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-IxB5k2Kc.css",
+    "name": "app",
+    "names": [
+      "app.css"
+    ],
+    "src": "resources/css/app.css",
+    "isEntry": true,
+    "assets": [
+      "assets/armour-C2wx8aDi.svg",
+      "assets/contours-B1Sz71Um.svg"
+    ]
+  },
+  "resources/img/armour.svg": {
+    "file": "assets/armour-C2wx8aDi.svg",
+    "src": "resources/img/armour.svg"
+  },
+  "resources/img/contours.svg": {
+    "file": "assets/contours-B1Sz71Um.svg",
+    "src": "resources/img/contours.svg"
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-C5fUE6h8.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true
+  }
+}
