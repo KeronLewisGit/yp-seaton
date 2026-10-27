@@ -63,7 +63,7 @@
 <?php endif; ?>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
-        <p class="hint mt-8 max-w-[65ch]">Photos are illustrative and do not show these projects; see <a class="text-link" href="<?php echo e(route('credits')); ?>">photo credits</a>. An award or Cabinet approval is listed as such and is not a claim of completion.</p>
+        <p class="hint mt-8 max-w-[65ch]">Photos are illustrative and do not show these projects; see <a class="text-link" href="<?php echo e(route('credits')); ?>">photo credits</a>. An award or Cabinet approval is listed as such; it does not mean the works are complete.</p>
     </section>
  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>

@@ -78,10 +78,10 @@ class PublicSiteTest extends TestCase
 
     public function test_site_never_mentions_disputes_or_claims(): void
     {
-        foreach (['/', '/about', '/projects', '/services', '/capability-statement'] as $url) {
+        foreach (array_merge(['/', '/about', '/projects', '/services', '/capability-statement', '/contact', '/tenders', '/prequalification', '/careers'], Portfolio::all()->keys()->map(fn ($s) => '/projects/'.$s)->all()) as $url) {
             $html = strtolower(strip_tags((string) $this->get($url)->getContent()));
-            foreach (['arbitration', 'lawsuit', 'dispute', 'sued', 'court'] as $word) {
-                $this->assertStringNotContainsString($word, $html, "{$url} mentions {$word}");
+            foreach (['arbitration', 'lawsuit', 'dispute', 'claim', 'sued', 'court', 'judgment'] as $word) {
+                $this->assertDoesNotMatchRegularExpression('/\\b'.$word.'/', $html, "{$url} mentions {$word}");
             }
         }
     }
@@ -120,6 +120,30 @@ class PublicSiteTest extends TestCase
             $res->assertOk()->assertHeader('Content-Type', 'application/pdf');
         } else {
             $res->assertRedirect('/capability-statement');
+        }
+    }
+
+    public function test_capability_statement_lists_every_project_with_its_source(): void
+    {
+        $res = $this->get('/capability-statement')->assertOk()->assertSee(config('ypseaton.name'));
+        foreach (Portfolio::all() as $p) {
+            $res->assertSee($p['title'])->assertSee($p['sources'][0]['label']);
+            if (! empty($p['value'])) {
+                $res->assertSee(jmd($p['value']), false);
+            }
+        }
+        foreach ((array) config('ypseaton.services') as $service) {
+            $res->assertSee($service['title']);
+        }
+    }
+
+    public function test_project_pages_say_the_photo_is_illustrative_and_never_invent_a_year(): void
+    {
+        foreach (Portfolio::all() as $slug => $p) {
+            $res = $this->get('/projects/'.$slug)->assertSee('Illustrative photo');
+            if (empty($p['year'])) {
+                $res->assertSee('Not published');
+            }
         }
     }
 

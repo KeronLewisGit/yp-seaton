@@ -13,7 +13,7 @@ const OUT_HTML = path.resolve('dist/proposal/proposal.html');
 const OUT_PDF = path.resolve('dist/proposal/YP-Seaton-Website-Proposal.pdf');
 const MAX_MB = 9.5;
 const DATE = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-const TESTS = process.env.TEST_COUNT ?? '70';
+const TESTS = process.env.TEST_COUNT ?? '72';
 const img = (f) => 'file://' + f;
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
 

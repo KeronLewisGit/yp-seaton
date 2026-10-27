@@ -17,6 +17,6 @@
                 <x-project-card :project="$project" />
             @endforeach
         </div>
-        <p class="hint mt-8 max-w-[65ch]">Photos are illustrative and do not show these projects; see <a class="text-link" href="{{ route('credits') }}">photo credits</a>. An award or Cabinet approval is listed as such and is not a claim of completion.</p>
+        <p class="hint mt-8 max-w-[65ch]">Photos are illustrative and do not show these projects; see <a class="text-link" href="{{ route('credits') }}">photo credits</a>. An award or Cabinet approval is listed as such; it does not mean the works are complete.</p>
     </section>
 </x-layouts.site>
