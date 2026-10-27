@@ -128,6 +128,28 @@ class Tender extends Model implements Submission
         return true;
     }
 
+    /**
+     * Moves to $status with a conditional UPDATE, so the same change sent twice at once is
+     * applied (and logged) only once.
+     */
+    public function claimStatus(TenderStatus $status): bool
+    {
+        if ($this->status === $status) {
+            return false;
+        }
+        $changes = ['status' => $status, 'status_changed_at' => now()];
+        if ($status === TenderStatus::Submitted && $this->submitted_at === null) {
+            $changes['submitted_at'] = now();
+        }
+        $claimed = static::query()->whereKey($this->getKey())->where('status', $this->getRawOriginal('status'))
+            ->update(array_map(fn ($v) => $v instanceof \BackedEnum ? $v->value : $v, $changes)) === 1;
+        if ($claimed) {
+            $this->forceFill($changes)->syncOriginal();
+        }
+
+        return $claimed;
+    }
+
     public function isOverdue(): bool
     {
         return $this->status->isOpen() && $this->submission_due_at->isPast();

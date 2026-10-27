@@ -43,6 +43,13 @@ class DemoSeeder extends Seeder
 
     public function run(): void
     {
+        // Fictional data and "password" logins: never on the live site. A pitch preview runs
+        // APP_ENV=production with YPS_PREVIEW=true, so it is allowed there.
+        if (app()->isProduction() && ! yps('preview')) {
+            $this->command?->error('DemoSeeder does not run in production unless YPS_PREVIEW=true (a pitch preview).');
+
+            return;
+        }
         mt_srand(876);
         $staff = $this->users();
         $this->tenders($staff);

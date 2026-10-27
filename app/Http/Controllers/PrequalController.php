@@ -10,6 +10,7 @@ use App\Models\VendorDocument;
 use App\Notifications\NewSubmission;
 use App\Support\Intake;
 use App\Support\Notify;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -28,6 +29,8 @@ class PrequalController extends Controller
     public function store(StoreVendorRequest $request): RedirectResponse
     {
         if (Intake::isBot($request, Vendor::fakeReference(), 'Prequalification')) {
+            $request->releaseHeldUploads();
+
             return to_route('thanks');
         }
 
@@ -39,6 +42,7 @@ class PrequalController extends Controller
             $this->storeDocument($vendor, $kind, $request);
         }
 
+        $request->releaseHeldUploads();
         Intake::complete($vendor->refresh(), $request);
 
         return to_route('thanks');
@@ -56,7 +60,7 @@ class PrequalController extends Controller
 
     public function storeRenewal(Request $request, Vendor $vendor): RedirectResponse
     {
-        $this->guardRenewal($request, $vendor);
+        $seen = $this->guardRenewal($request, $vendor);
         $request->validate([
             'docs' => ['required', 'array'],
             'docs.*' => ['array'],
@@ -69,14 +73,22 @@ class PrequalController extends Controller
             'docs.*.file.max' => 'Each file must be 5 MB or smaller.',
             'docs.*.file.mimes' => 'Certificates must be PDF, JPG or PNG files.',
         ]);
-        $stored = 0;
+        $stored = $raced = 0;
         foreach (DocumentKind::certificates() as $kind) {
-            if ($this->storeDocument($vendor, $kind, $request, supersede: true)) {
-                $stored++;
+            if (! $request->file('docs.'.$kind->value.'.file') instanceof UploadedFile) {
+                continue;
             }
+            // Claim the copy being replaced first: if the form was sent twice at once, only one wins.
+            if (! $vendor->supersedeCurrent($kind, $seen)) {
+                $raced++;
+
+                continue;
+            }
+            $this->storeDocument($vendor, $kind, $request);
+            $stored++;
         }
         if ($stored === 0) {
-            return back()->withErrors(['docs' => 'Choose at least one renewed certificate to upload.']);
+            return $raced > 0 ? to_route('thanks') : back()->withErrors(['docs' => 'Choose at least one renewed certificate to upload.']);
         }
 
         $vendor->log("Vendor uploaded {$stored} renewed ".str('certificate')->plural($stored).' through the renewal link.');
@@ -89,21 +101,23 @@ class PrequalController extends Controller
     /**
      * A renewal link works only for a vendor still on the books, and only until the certificates
      * it was sent for have been renewed: once used, the same email cannot replace them again.
+     *
+     * @return Collection<int, VendorDocument> the certificates the link was sent for, still current
      */
-    private function guardRenewal(Request $request, Vendor $vendor): void
+    private function guardRenewal(Request $request, Vendor $vendor): Collection
     {
         abort_if($vendor->status === VendorStatus::Declined, 403, 'This renewal link is no longer active. Please contact our procurement team.');
-        abort_if($vendor->awaitingRenewal(input_string($request->query('for')))->isEmpty(), 403, 'This renewal link has already been used. If you need to send another certificate, contact our procurement team for a new link.');
+        $pending = $vendor->awaitingRenewal(input_string($request->query('for')));
+        abort_if($pending->isEmpty(), 403, 'This renewal link has already been used. If you need to send another certificate, contact our procurement team for a new link.');
+
+        return $pending;
     }
 
-    private function storeDocument(Vendor $vendor, DocumentKind $kind, Request $request, bool $supersede = false): ?VendorDocument
+    private function storeDocument(Vendor $vendor, DocumentKind $kind, Request $request): ?VendorDocument
     {
         $file = $request->file('docs.'.$kind->value.'.file');
         if (! $file instanceof UploadedFile) {
             return null;
-        }
-        if ($supersede) {
-            $vendor->documents()->where('kind', $kind)->whereNull('superseded_at')->update(['superseded_at' => now()]);
         }
 
         return $vendor->documents()->create([

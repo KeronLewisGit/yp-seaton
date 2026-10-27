@@ -4,12 +4,25 @@ namespace App\Http\Requests;
 
 use App\Enums\DocumentKind;
 use App\Enums\VendorType;
+use App\Http\Requests\Concerns\HoldsUploads;
 use App\Models\Vendor;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class StoreVendorRequest extends FormRequest
 {
+    use HoldsUploads;
+
+    public static function heldForm(): string
+    {
+        return 'prequal';
+    }
+
+    protected function heldFields(): array
+    {
+        return collect(DocumentKind::cases())->mapWithKeys(fn (DocumentKind $k) => ['docs.'.$k->value.'.file' => false])->all();
+    }
+
     public function authorize(): bool
     {
         return true;
@@ -18,6 +31,7 @@ class StoreVendorRequest extends FormRequest
     #[\Override]
     protected function prepareForValidation(): void
     {
+        $this->restoreHeldUploads();
         $this->merge([
             'email' => strtolower(input_string($this->input('email'))),
             // TRNs are written 123-456-789 or 123 456 789; keep the digits.

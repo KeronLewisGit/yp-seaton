@@ -4,9 +4,11 @@ namespace Tests\Feature;
 
 use App\Enums\DocumentKind;
 use App\Enums\VendorStatus;
+use App\Models\User;
 use App\Models\Vendor;
 use App\Notifications\CertificateExpiring;
 use App\Notifications\SubmissionReceived;
+use Database\Seeders\DemoSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Notification;
@@ -218,5 +220,42 @@ class PrequalFlowTest extends TestCase
         $junk = ['type' => ['x'], 'company_name' => ['y'], 'trades' => 'earthworks', 'parishes_served' => [['x']], 'docs' => ['tcc' => ['number' => ['x'], 'expires_on' => ['x']]]];
         $this->from('/prequalification')->post('/prequalification', $junk)->assertRedirect('/prequalification')->assertSessionHasErrors(['type', 'company_name', 'trades']);
         $this->followingRedirects()->from('/prequalification')->post('/prequalification', $junk)->assertOk()->assertSee('Please check');
+    }
+
+    public function test_a_renewal_sent_twice_at_once_replaces_the_certificate_once(): void
+    {
+        $vendor = Vendor::factory()->approved()->withCertificates(10)->create();
+        $stale = Vendor::findOrFail($vendor->id);
+
+        // Both requests passed the link check while the TCC was still current.
+        $seen = $vendor->awaitingRenewal($vendor->documents()->pluck('id')->implode('.'));
+        $this->assertTrue($vendor->supersedeCurrent(DocumentKind::Tcc, $seen));
+        $this->assertFalse($stale->supersedeCurrent(DocumentKind::Tcc, $seen), 'the second request finds the copy already claimed');
+        $this->assertSame(1, $vendor->documents()->where('kind', 'tcc')->whereNotNull('superseded_at')->count());
+    }
+
+    public function test_overlapping_reminder_runs_email_each_certificate_once(): void
+    {
+        Notification::fake();
+        $vendor = Vendor::factory()->approved()->withCertificates(10)->create();
+        // Another run claimed the TCC a moment ago.
+        $vendor->documents()->where('kind', 'tcc')->update(['reminded_at' => now()]);
+
+        $this->artisan('app:remind-expiring')->assertSuccessful();
+        Notification::assertSentOnDemand(CertificateExpiring::class, fn (CertificateExpiring $n) => $n->documents->count() === 2
+            && ! $n->documents->contains(fn ($d) => $d->kind === DocumentKind::Tcc));
+    }
+
+    public function test_demo_data_never_seeds_a_live_site_but_does_seed_a_pitch_preview(): void
+    {
+        Storage::fake('local');
+        $this->app['env'] = 'production';
+        config(['ypseaton.preview' => false]);
+        app(DemoSeeder::class)->run();
+        $this->assertSame(0, User::count());
+
+        config(['ypseaton.preview' => true]);
+        app(DemoSeeder::class)->run();
+        $this->assertTrue(User::where('email', 'admin@ypseaton.test')->exists());
     }
 }

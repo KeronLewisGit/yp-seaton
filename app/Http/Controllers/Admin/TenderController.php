@@ -72,7 +72,7 @@ class TenderController extends Controller
             return back()->withErrors(['assigned_to' => "{$assignee->name} works in {$assignee->role->label()} and can't see tenders."]);
         }
 
-        if (isset($data['status']) && $tender->moveTo($status = TenderStatus::from($data['status']))) {
+        if (isset($data['status']) && $tender->claimStatus($status = TenderStatus::from($data['status']))) {
             $tender->log('Status changed to '.$status->label().'.', 'status', $user);
         }
         if ($reassign) {

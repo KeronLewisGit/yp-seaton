@@ -60,7 +60,8 @@
                         </div>
                         <div>
                             <label for="doc-{{ $kind->value }}" class="label">File</label>
-                            <input id="doc-{{ $kind->value }}" type="file" name="docs[{{ $kind->value }}][file]" class="input" accept=".pdf,.jpg,.jpeg,.png" @if($forAll) required @endif @error($k.'.file') aria-invalid="true" @enderror>
+                            <input id="doc-{{ $kind->value }}" type="file" name="docs[{{ $kind->value }}][file]" class="input" accept=".pdf,.jpg,.jpeg,.png" @if($forAll && \App\Support\HeldUploads::names('prequal', $k.'.file') === []) required @endif @error($k.'.file') aria-invalid="true" @enderror>
+                            <x-held-upload form="prequal" :field="$k.'.file'" />
                             <x-error :for="$k.'.file'" />
                         </div>
                         <div class="grid gap-4 sm:grid-cols-2">

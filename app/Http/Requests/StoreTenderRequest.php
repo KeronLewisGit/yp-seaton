@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Enums\ProcurementMethod;
+use App\Http\Requests\Concerns\HoldsUploads;
 use App\Models\Tender;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Carbon;
@@ -11,6 +12,18 @@ use Illuminate\Validation\Validator;
 
 class StoreTenderRequest extends FormRequest
 {
+    use HoldsUploads;
+
+    public static function heldForm(): string
+    {
+        return 'tender';
+    }
+
+    protected function heldFields(): array
+    {
+        return ['files' => true];
+    }
+
     public function authorize(): bool
     {
         return true;
@@ -19,6 +32,7 @@ class StoreTenderRequest extends FormRequest
     #[\Override]
     protected function prepareForValidation(): void
     {
+        $this->restoreHeldUploads();
         $this->merge([
             'email' => strtolower(input_string($this->input('email'))),
             'bid_security' => $this->boolean('bid_security'),

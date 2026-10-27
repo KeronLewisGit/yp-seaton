@@ -20,6 +20,8 @@ class TenderController extends Controller
     public function store(StoreTenderRequest $request): RedirectResponse
     {
         if (Intake::isBot($request, Tender::fakeReference(), 'Tender invitation')) {
+            $request->releaseHeldUploads();
+
             return to_route('thanks');
         }
 
@@ -42,6 +44,7 @@ class TenderController extends Controller
             ]);
         }
 
+        $request->releaseHeldUploads();
         Intake::complete($tender->refresh(), $request);
 
         return to_route('thanks');

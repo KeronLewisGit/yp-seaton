@@ -183,6 +183,50 @@ class Vendor extends Model implements Submission
         return $ids === [] ? new Collection : $this->documents()->whereIn('id', $ids)->whereNull('superseded_at')->get();
     }
 
+    /**
+     * Moves to $status with a conditional UPDATE (only if nobody changed the status since this
+     * record was loaded), so a double-click or two officers at once approve it only once.
+     */
+    public function claimStatus(VendorStatus $status, ?User $by = null): bool
+    {
+        if ($this->status === $status) {
+            return false;
+        }
+        $now = now();
+        $changes = ['status' => $status, 'status_changed_at' => $now, 'reviewed_by' => $by !== null ? $by->id : $this->reviewed_by];
+        if ($status === VendorStatus::Approved) {
+            $changes['approved_at'] = $now;
+        }
+        $claimed = static::query()->whereKey($this->getKey())->where('status', $this->getRawOriginal('status'))
+            ->update(array_map(fn ($v) => $v instanceof \BackedEnum ? $v->value : $v, $changes)) === 1;
+        if ($claimed) {
+            $this->forceFill($changes)->syncOriginal();
+        }
+
+        return $claimed;
+    }
+
+    /**
+     * Marks the current copy of $kind as superseded, ahead of storing its renewal. $seen is what
+     * the request found current when it checked the link: claiming exactly those rows with a
+     * conditional UPDATE means that, when the same renewal is sent twice at once, only one wins.
+     *
+     * @param  iterable<VendorDocument>  $seen
+     */
+    public function supersedeCurrent(DocumentKind $kind, iterable $seen = []): bool
+    {
+        $ids = collect($seen)->filter(fn (VendorDocument $d) => $d->kind === $kind)->map(fn (VendorDocument $d) => $d->id)->values();
+        if ($ids->isEmpty()) {
+            // A certificate the link was not sent for: replace whatever is current.
+            $ids = $this->documents()->where('kind', $kind)->whereNull('superseded_at')->pluck('id');
+            if ($ids->isEmpty()) {
+                return true;
+            }
+        }
+
+        return VendorDocument::whereIn('id', $ids)->whereNull('superseded_at')->update(['superseded_at' => now()]) === $ids->count();
+    }
+
     public function moveTo(VendorStatus $status): bool
     {
         if ($this->status === $status) {

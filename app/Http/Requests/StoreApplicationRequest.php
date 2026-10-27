@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enums\Experience;
 use App\Enums\JobCategory;
+use App\Http\Requests\Concerns\HoldsUploads;
 use App\Models\JobApplication;
 use App\Models\JobPosting;
 use Illuminate\Foundation\Http\FormRequest;
@@ -11,6 +12,18 @@ use Illuminate\Validation\Rule;
 
 class StoreApplicationRequest extends FormRequest
 {
+    use HoldsUploads;
+
+    public static function heldForm(): string
+    {
+        return 'application';
+    }
+
+    protected function heldFields(): array
+    {
+        return ['cv' => false];
+    }
+
     public function authorize(): bool
     {
         return true;
@@ -19,6 +32,7 @@ class StoreApplicationRequest extends FormRequest
     #[\Override]
     protected function prepareForValidation(): void
     {
+        $this->restoreHeldUploads();
         // When a job is picked, its category is the truth (so "professional roles need a CV" follows the job).
         $jobId = input_string($this->input('job_posting_id'));
         $job = ctype_digit($jobId) ? JobPosting::open()->find((int) $jobId) : null;

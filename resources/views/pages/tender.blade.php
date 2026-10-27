@@ -47,6 +47,7 @@
                     <label for="f-files" class="label">Documents <span class="opt">(optional)</span></label>
                     <input id="f-files" type="file" name="files[]" multiple class="input" accept=".{{ implode(',.', \App\Models\Tender::FILE_TYPES) }}" aria-describedby="f-files-hint">
                     <span id="f-files-hint" class="hint">PDF, Word, Excel or ZIP. Stored privately for our estimating team.</span>
+                    <x-held-upload form="tender" field="files" />
                     <x-error for="files" /><x-error for="files.0" /><x-error for="files.1" /><x-error for="files.2" /><x-error for="files.3" /><x-error for="files.4" />
                 </div>
                 <x-field name="documents_url" label="Link to the documents" type="url" :optional="true" maxlength="300" placeholder="https://" />

@@ -276,4 +276,34 @@ class AdminAccessTest extends TestCase
         $this->assertSame('answered', $e->refresh()->status->value);
         $this->assertSame(2, $e->notes()->count());
     }
+
+    public function test_an_approval_sent_twice_at_once_is_applied_once(): void
+    {
+        $officer = $this->staff(Role::Procurement);
+        $vendor = Vendor::factory()->withCertificates()->create();
+        // Two requests that loaded the vendor before either saved.
+        $first = Vendor::findOrFail($vendor->id);
+        $second = Vendor::findOrFail($vendor->id);
+
+        $this->assertTrue($first->claimStatus(VendorStatus::Approved, $officer));
+        $this->assertFalse($second->claimStatus(VendorStatus::Approved, $officer));
+        $this->assertSame(VendorStatus::Approved, $vendor->refresh()->status);
+        $this->assertSame($officer->id, $vendor->reviewed_by);
+
+        // Through the controller: the second identical request adds no second timeline entry.
+        $this->actingAs($officer);
+        $this->patch(route('admin.vendors.update', $vendor), ['status' => 'reviewing'])->assertRedirect();
+        $this->patch(route('admin.vendors.update', $vendor), ['status' => 'reviewing'])->assertRedirect();
+        $this->assertSame(1, $vendor->notes()->where('kind', 'status')->count());
+    }
+
+    public function test_a_tender_status_change_sent_twice_at_once_is_applied_once(): void
+    {
+        $tender = Tender::factory()->create();
+        $first = Tender::findOrFail($tender->id);
+        $second = Tender::findOrFail($tender->id);
+        $this->assertTrue($first->claimStatus(TenderStatus::Submitted));
+        $this->assertFalse($second->claimStatus(TenderStatus::Submitted));
+        $this->assertNotNull($tender->refresh()->submitted_at);
+    }
 }

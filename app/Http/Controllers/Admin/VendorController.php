@@ -55,9 +55,7 @@ class VendorController extends Controller
         if ($status === VendorStatus::Approved && ($state = $vendor->load('currentDocuments')->complianceState()) !== 'valid' && $state !== 'expiring') {
             return back()->withErrors(['status' => 'A required certificate is '.($state === 'missing' ? 'missing' : 'expired').'. Ask for the current copy before approving.']);
         }
-        if ($vendor->moveTo($status)) {
-            $vendor->reviewed_by = $user->id;
-            $vendor->save();
+        if ($vendor->claimStatus($status, $user)) {
             $vendor->log('Status changed to '.$status->label().'.', 'status', $user);
         }
 

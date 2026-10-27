@@ -34,6 +34,8 @@ class CareerController extends Controller
     public function store(StoreApplicationRequest $request): RedirectResponse
     {
         if (Intake::isBot($request, JobApplication::fakeReference(), 'Job application')) {
+            $request->releaseHeldUploads();
+
             return to_route('thanks');
         }
 
@@ -49,6 +51,7 @@ class CareerController extends Controller
         }
         $application = JobApplication::create($data + ['consented_at' => now()]);
 
+        $request->releaseHeldUploads();
         Intake::complete($application->refresh()->load('jobPosting'), $request);
 
         return to_route('thanks');

@@ -29,6 +29,7 @@
                     <label for="f-cv" class="label">CV</label>
                     <input id="f-cv" type="file" name="cv" class="input" accept=".pdf,.doc,.docx" aria-describedby="f-cv-hint" @error('cv') aria-invalid="true" @enderror>
                     <span id="f-cv-hint" class="hint">PDF or Word, up to 5 MB. Optional for site roles.</span>
+                    <x-held-upload form="application" field="cv" />
                     <x-error for="cv" />
                 </div>
                 <x-field name="message" label="Anything else" type="textarea" :optional="true" maxlength="2000" />
