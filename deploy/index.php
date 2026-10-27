@@ -5,7 +5,7 @@
 | Hostinger front controller
 |--------------------------------------------------------------------------
 | This file lives in public_html/. The Laravel application itself lives in
-| public_html/hadeed-app/ (blocked from the web by its own .htaccess).
+| public_html/yps-app/ (blocked from the web by its own .htaccess).
 */
 
 use Illuminate\Foundation\Application;
@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
-$appPath = __DIR__.'/hadeed-app';
+$appPath = __DIR__.'/yps-app';
 
 if (file_exists($maintenance = $appPath.'/storage/framework/maintenance.php')) {
     require $maintenance;

@@ -105,7 +105,7 @@
             <dl class="text-sm leading-relaxed sm:text-right">
                 <div><?php echo e(yps('address.street')); ?>, <?php echo e(yps('address.city')); ?>, <?php echo e(yps('address.country')); ?></div>
                 <div>Tel. <?php echo e(format_phone(yps('phone'))); ?> · <?php echo e(yps('email')); ?></div>
-                <div><?php echo e(parse_url(route('home'), PHP_URL_HOST)); ?></div>
+                <div><?php echo e(yps('website')); ?></div>
             </dl>
         </header>
 
@@ -122,7 +122,7 @@
             </dl>
         </section>
 
-        <section class="mt-7">
+        <section class="mt-5">
             <h2 class="border-b border-[#10232a] pb-1 text-xs font-bold uppercase tracking-[0.16em]">Core services</h2>
             <ul class="mt-3 grid gap-x-6 gap-y-2.5 text-[0.875rem] sm:grid-cols-2">
                 <?php $__currentLoopData = $services; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $s): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -131,33 +131,33 @@
             </ul>
         </section>
 
-        <section class="mt-7">
+        <section class="mt-5">
             <h2 class="border-b border-[#10232a] pb-1 text-xs font-bold uppercase tracking-[0.16em]">Public contracts on record</h2>
             <div class="overflow-x-auto">
                 <table class="mt-2 w-full min-w-[36rem] border-collapse text-left text-[0.8125rem]">
-                    <thead><tr class="border-b border-[#9fb0b5] text-[0.6875rem] uppercase tracking-wider text-[#3b5158]"><th class="py-1.5 pr-3 font-bold">Project</th><th class="py-1.5 pr-3 font-bold">Client</th><th class="py-1.5 pr-3 font-bold">Year</th><th class="py-1.5 pr-3 text-right font-bold">Value</th><th class="py-1.5 font-bold">Source</th></tr></thead>
+                    <thead><tr class="border-b border-[#9fb0b5] text-[0.6875rem] uppercase tracking-wider text-[#3b5158]"><th class="py-1 pr-3 font-bold">Project</th><th class="py-1 pr-3 font-bold">Client</th><th class="py-1 pr-3 font-bold">Year</th><th class="py-1 pr-3 text-right font-bold">Value</th><th class="py-1 font-bold">Source</th></tr></thead>
                     <tbody>
                         <?php $__currentLoopData = $projects->sortByDesc(fn ($p) => $p['year'] ?? 0); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <tr class="border-b border-[#d8dedf] align-top">
-                                <td class="py-1.5 pr-3"><span class="font-semibold"><?php echo e($p['title']); ?></span><br><span class="text-[#3b5158]"><?php echo e($p['parish']); ?> · <?php echo e($p['status']); ?></span></td>
-                                <td class="py-1.5 pr-3"><?php echo e($p['client'] ?? '–'); ?></td>
-                                <td class="num py-1.5 pr-3"><?php echo e($p['year'] ?? '–'); ?></td>
-                                <td class="num whitespace-nowrap py-1.5 pr-3 text-right font-semibold"><?php echo e(jmd($p['value'] ?? null) ?? '–'); ?></td>
-                                <td class="py-1.5 text-[#3b5158]"><?php echo e($p['sources'][0]['label'] ?? ''); ?><?php if(! empty($p['sources'][0]['date'])): ?>, <?php echo e($p['sources'][0]['date']); ?><?php endif; ?></td>
+                                <td class="py-1 pr-3"><span class="font-semibold"><?php echo e($p['title']); ?></span><br><span class="text-[#3b5158]"><?php echo e($p['parish']); ?></span></td>
+                                <td class="py-1 pr-3"><?php echo e($p['client'] ?? '–'); ?></td>
+                                <td class="num py-1 pr-3"><?php echo e($p['year'] ?? '–'); ?></td>
+                                <td class="num whitespace-nowrap py-1 pr-3 text-right font-semibold"><?php echo e(jmd($p['value'] ?? null) ?? '–'); ?></td>
+                                <td class="py-1 text-[#3b5158]"><?php echo e($p['sources'][0]['label'] ?? ''); ?><?php if(! empty($p['sources'][0]['date'])): ?>, <?php echo e($p['sources'][0]['date']); ?><?php endif; ?></td>
                             </tr>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </tbody>
                 </table>
             </div>
-            <p class="mt-2 text-[0.75rem] text-[#3b5158]">Values are contract sums as published (Aston Ridge: final cost). Awards and Cabinet approvals are listed as such. Full sources: <?php echo e(route('projects.index')); ?></p>
+            <p class="mt-2 text-[0.75rem] text-[#3b5158]">Values are contract sums as published (Aston Ridge: final cost). Awards and Cabinet approvals are listed as such. Full sources: <?php echo e(yps('website')); ?>/projects</p>
         </section>
 
-        <section class="mt-7 grid gap-6 text-[0.875rem] sm:grid-cols-2">
+        <section class="mt-5 grid gap-6 text-[0.875rem] sm:grid-cols-2">
             <div>
                 <h2 class="border-b border-[#10232a] pb-1 text-xs font-bold uppercase tracking-[0.16em]">Working with us</h2>
                 <ul class="mt-3 space-y-1.5">
-                    <li>Tender invitations and RFQs: <?php echo e(route('tenders.create')); ?></li>
-                    <li>Subcontractor and supplier prequalification: <?php echo e(route('prequal.create')); ?></li>
+                    <li>Tender invitations and RFQs: <?php echo e(yps('website')); ?>/tenders</li>
+                    <li>Subcontractor and supplier prequalification: <?php echo e(yps('website')); ?>/prequalification</li>
                     <li>Private document links for client project teams</li>
                 </ul>
             </div>
@@ -166,7 +166,7 @@
                 <p class="mt-3"><?php echo e(yps('address.street')); ?>, <?php echo e(yps('address.city')); ?>, <?php echo e(yps('address.country')); ?><br>Tel. <?php echo e(format_phone(yps('phone'))); ?> · Fax <?php echo e(format_phone(yps('fax'))); ?><br><?php echo e(yps('email')); ?></p>
             </div>
         </section>
-        <footer class="mt-8 flex items-center justify-between border-t-[3px] border-[#10232a] pt-2 text-[0.6875rem] uppercase tracking-[0.14em] text-[#3b5158]"><span><?php echo e(yps('tagline')); ?></span><span><?php echo e(yps('short_name')); ?></span></footer>
+        <footer class="mt-5 flex items-center justify-between border-t-[3px] border-[#10232a] pt-2 text-[0.6875rem] uppercase tracking-[0.14em] text-[#3b5158]"><span><?php echo e(yps('tagline')); ?></span><span><?php echo e(yps('short_name')); ?></span></footer>
     </main>
 </body>
 </html>

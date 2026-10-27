@@ -6,16 +6,16 @@ use Symfony\Component\Console\Output\BufferedOutput;
 
 /**
  * One-time installer for hosts without SSH. Visit /setup.php?token=YOUR_SETUP_TOKEN
- * after uploading the package and filling in hadeed-app/.env. Deletes itself when done.
+ * after uploading the package and filling in yps-app/.env. Deletes itself when done.
  */
-$appPath = __DIR__.'/hadeed-app';
+$appPath = __DIR__.'/yps-app';
 $envFile = $appPath.'/.env';
 header('Content-Type: text/html; charset=utf-8');
-echo '<!doctype html><meta name="viewport" content="width=device-width"><title>Hadeed Motors setup</title><body style="font-family:system-ui;max-width:640px;margin:40px auto;padding:0 16px;line-height:1.5">';
-echo '<h1>Hadeed Motors – installer</h1>';
+echo '<!doctype html><meta name="viewport" content="width=device-width"><title>Y.P. Seaton &amp; Associates setup</title><body style="font-family:system-ui;max-width:640px;margin:40px auto;padding:0 16px;line-height:1.5">';
+echo '<h1>Y.P. Seaton &amp; Associates – installer</h1>';
 
 if (! file_exists($envFile)) {
-    exit('<p style="color:#b00">hadeed-app/.env not found. Copy .env.example to .env and fill in the database details first.</p>');
+    exit('<p style="color:#b00">yps-app/.env not found. Copy .env.example to .env and fill in the database details first.</p>');
 }
 $env = [];
 foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {

@@ -4,8 +4,8 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OUT="$ROOT/dist"
 STAGE="$OUT/stage"
-APP="$STAGE/hadeed-app"
-ZIP="$OUT/hadeed-hostinger.zip"
+APP="$STAGE/yps-app"
+ZIP="$OUT/yps-hostinger.zip"
 
 cd "$ROOT"
 echo "→ Building front-end assets"
@@ -25,7 +25,7 @@ echo "→ Installing production PHP dependencies (PHP 8.3 compatible)"
 cp "$ROOT/composer.json" "$ROOT/composer.lock" "$APP/"
 ( cd "$APP" && composer install --no-dev --optimize-autoloader --no-interaction --quiet --ignore-platform-req=php )
 
-mkdir -p "$APP/storage/framework/"{cache/data,sessions,views,testing} "$APP/storage/logs" "$APP/storage/app/public" "$APP/storage/app/private/leads" "$APP/bootstrap/cache"
+mkdir -p "$APP/storage/framework/"{cache/data,sessions,views,testing} "$APP/storage/logs" "$APP/storage/app/public" "$APP/storage/app/private/"{tenders,vendors,cvs,rooms} "$APP/bootstrap/cache"
 touch "$APP/storage/logs/.gitkeep"
 cp "$ROOT/deploy/env.production.example" "$APP/.env.example"
 cp "$ROOT/deploy/app.htaccess" "$APP/.htaccess"
@@ -33,11 +33,11 @@ cp "$ROOT/deploy/app.htaccess" "$APP/.htaccess"
 echo "→ Staging public files"
 cp -R "$ROOT/public/build" "$STAGE/build"
 cp -R "$ROOT/public/img" "$STAGE/img"
-# Vehicle photos uploaded in the dashboard land here. PHP never runs from it.
-mkdir -p "$STAGE/uploads/vehicles"
-cp "$ROOT/deploy/uploads.htaccess" "$STAGE/uploads/.htaccess"
+# Pre-generated capability statement PDF (npm run capability), if built.
+[ -d "$ROOT/public/downloads" ] && cp -R "$ROOT/public/downloads" "$STAGE/downloads"
 
 cp "$ROOT/public/favicon.svg" "$STAGE/favicon.svg"
+[ -f "$ROOT/public/favicon.ico" ] && cp "$ROOT/public/favicon.ico" "$STAGE/favicon.ico"
 cp "$ROOT/deploy/index.php" "$STAGE/index.php"
 cp "$ROOT/deploy/.htaccess" "$STAGE/.htaccess"
 cp "$ROOT/deploy/robots.txt" "$STAGE/robots.txt"

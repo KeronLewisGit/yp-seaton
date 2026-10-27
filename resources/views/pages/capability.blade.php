@@ -46,7 +46,7 @@
             </dl>
         </section>
 
-        <section class="mt-7">
+        <section class="mt-5">
             <h2 class="border-b border-[#10232a] pb-1 text-xs font-bold uppercase tracking-[0.16em]">Core services</h2>
             <ul class="mt-3 grid gap-x-6 gap-y-2.5 text-[0.875rem] sm:grid-cols-2">
                 @foreach ($services as $s)
@@ -55,19 +55,19 @@
             </ul>
         </section>
 
-        <section class="mt-7">
+        <section class="mt-5">
             <h2 class="border-b border-[#10232a] pb-1 text-xs font-bold uppercase tracking-[0.16em]">Public contracts on record</h2>
             <div class="overflow-x-auto">
                 <table class="mt-2 w-full min-w-[36rem] border-collapse text-left text-[0.8125rem]">
-                    <thead><tr class="border-b border-[#9fb0b5] text-[0.6875rem] uppercase tracking-wider text-[#3b5158]"><th class="py-1.5 pr-3 font-bold">Project</th><th class="py-1.5 pr-3 font-bold">Client</th><th class="py-1.5 pr-3 font-bold">Year</th><th class="py-1.5 pr-3 text-right font-bold">Value</th><th class="py-1.5 font-bold">Source</th></tr></thead>
+                    <thead><tr class="border-b border-[#9fb0b5] text-[0.6875rem] uppercase tracking-wider text-[#3b5158]"><th class="py-1 pr-3 font-bold">Project</th><th class="py-1 pr-3 font-bold">Client</th><th class="py-1 pr-3 font-bold">Year</th><th class="py-1 pr-3 text-right font-bold">Value</th><th class="py-1 font-bold">Source</th></tr></thead>
                     <tbody>
                         @foreach ($projects->sortByDesc(fn ($p) => $p['year'] ?? 0) as $p)
                             <tr class="border-b border-[#d8dedf] align-top">
-                                <td class="py-1.5 pr-3"><span class="font-semibold">{{ $p['title'] }}</span><br><span class="text-[#3b5158]">{{ $p['parish'] }} · {{ $p['status'] }}</span></td>
-                                <td class="py-1.5 pr-3">{{ $p['client'] ?? '–' }}</td>
-                                <td class="num py-1.5 pr-3">{{ $p['year'] ?? '–' }}</td>
-                                <td class="num whitespace-nowrap py-1.5 pr-3 text-right font-semibold">{{ jmd($p['value'] ?? null) ?? '–' }}</td>
-                                <td class="py-1.5 text-[#3b5158]">{{ $p['sources'][0]['label'] ?? '' }}@if(! empty($p['sources'][0]['date'])), {{ $p['sources'][0]['date'] }}@endif</td>
+                                <td class="py-1 pr-3"><span class="font-semibold">{{ $p['title'] }}</span><br><span class="text-[#3b5158]">{{ $p['parish'] }}</span></td>
+                                <td class="py-1 pr-3">{{ $p['client'] ?? '–' }}</td>
+                                <td class="num py-1 pr-3">{{ $p['year'] ?? '–' }}</td>
+                                <td class="num whitespace-nowrap py-1 pr-3 text-right font-semibold">{{ jmd($p['value'] ?? null) ?? '–' }}</td>
+                                <td class="py-1 text-[#3b5158]">{{ $p['sources'][0]['label'] ?? '' }}@if(! empty($p['sources'][0]['date'])), {{ $p['sources'][0]['date'] }}@endif</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -76,7 +76,7 @@
             <p class="mt-2 text-[0.75rem] text-[#3b5158]">Values are contract sums as published (Aston Ridge: final cost). Awards and Cabinet approvals are listed as such. Full sources: {{ yps('website') }}/projects</p>
         </section>
 
-        <section class="mt-7 grid gap-6 text-[0.875rem] sm:grid-cols-2">
+        <section class="mt-5 grid gap-6 text-[0.875rem] sm:grid-cols-2">
             <div>
                 <h2 class="border-b border-[#10232a] pb-1 text-xs font-bold uppercase tracking-[0.16em]">Working with us</h2>
                 <ul class="mt-3 space-y-1.5">
@@ -90,7 +90,7 @@
                 <p class="mt-3">{{ yps('address.street') }}, {{ yps('address.city') }}, {{ yps('address.country') }}<br>Tel. {{ format_phone(yps('phone')) }} · Fax {{ format_phone(yps('fax')) }}<br>{{ yps('email') }}</p>
             </div>
         </section>
-        <footer class="mt-8 flex items-center justify-between border-t-[3px] border-[#10232a] pt-2 text-[0.6875rem] uppercase tracking-[0.14em] text-[#3b5158]"><span>{{ yps('tagline') }}</span><span>{{ yps('short_name') }}</span></footer>
+        <footer class="mt-5 flex items-center justify-between border-t-[3px] border-[#10232a] pt-2 text-[0.6875rem] uppercase tracking-[0.14em] text-[#3b5158]"><span>{{ yps('tagline') }}</span><span>{{ yps('short_name') }}</span></footer>
     </main>
 </body>
 </html>

@@ -1,36 +1,41 @@
 // Captures full-page screenshots of every screen (desktop + phone) for the client proposal.
 // Slices follow the page's own sections so a screenshot never breaks mid-block.
-// Usage: npm run proposal (the dev server must already be running; env: BASE_URL, STAFF_PASSWORD, VEHICLE, LEAD_ID, FINANCE_LEAD_ID)
+// Usage: npm run proposal (dev server on 8110 with demo data; env: BASE_URL, STAFF_PASSWORD, TENDER_ID, VENDOR_ID, APPLICATION_ID, ROOM_URL)
 import puppeteer from 'puppeteer-core';
 import fs from 'node:fs';
 import path from 'node:path';
+import { execSync } from 'node:child_process';
 
-const BASE = process.env.BASE_URL ?? 'http://127.0.0.1:8105';
+const BASE = process.env.BASE_URL ?? 'http://127.0.0.1:8110';
 const OUT = path.resolve('dist/proposal/shots');
 const CHROME = process.env.CHROME_PATH ?? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const PASSWORD = process.env.STAFF_PASSWORD ?? 'password';
-const VEHICLE = process.env.VEHICLE ?? 'sample-2019-suzuki-vitara'; // demo stock with a two-photo gallery
-const LEAD = process.env.LEAD_ID ?? '87'; // a demo test-drive lead on a stock unit
-const FINANCE_LEAD = process.env.FINANCE_LEAD_ID ?? '1'; // a demo finance application with ID and pay slip
+const TENDER = process.env.TENDER_ID ?? '1'; // demo tender in pricing, with a file and notes
+const VENDOR = process.env.VENDOR_ID ?? '2'; // demo vendor with an expired certificate
+const APPLICATION = process.env.APPLICATION_ID ?? '4'; // demo professional application with a CV
+
+// A signed client link to the first demo document room, made with the app's own key.
+const ROOM_URL = process.env.ROOM_URL ?? execSync(`php artisan tinker --execute="URL::forceRootUrl('${BASE}'); echo App\\Models\\DocumentRoom::firstOrFail()->signedUrl() ?? App\\Models\\DocumentRoom::firstOrFail()->shareLink(30);"`).toString().trim().split('\n').pop();
+const ROOM_PATH = ROOM_URL.replace(/^https?:\/\/[^/]+/, '');
 
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
 
 const PUBLIC = [
-  ['home', '/'], ['lineup', '/new'], ['model', '/new/suzuki/jimny'], ['inventory', '/pre-owned'], ['vehicle', `/pre-owned/${VEHICLE}`],
-  ['finance', '/finance'], ['service', '/service'], ['about', '/about'], ['contact', '/contact'],
+  ['home', '/'], ['services', '/services'], ['projects', '/projects'], ['project', '/projects/nmia-shoreline-protection'],
+  ['about', '/about'], ['capability', '/capability-statement'], ['contact', '/contact'],
 ];
 const FLOWS = [
-  ['test-drive', `/test-drive?vehicle=${VEHICLE}`], ['finance-apply', '/finance/apply'], ['trade-in', '/trade-in'], ['parts', '/parts'],
+  ['tender', '/tenders'], ['prequal', '/prequalification'], ['careers', '/careers'], ['apply', '/careers/apply'], ['room', ROOM_PATH],
 ];
 const ADMIN_PAGES = [
   ['admin-login', '/login'],
-  ['admin-dashboard', '/admin'], ['admin-inbox', '/admin/leads'], ['admin-lead', `/admin/leads/${LEAD}`],
-  ['admin-service', '/admin/service'], ['admin-finance', '/admin/finance'], ['admin-vehicles', '/admin/vehicles'],
-  ['admin-vehicle-edit', `/admin/vehicles/${VEHICLE}/edit`], ['admin-users', '/admin/users'], ['admin-settings', '/admin/settings'],
+  ['admin-dashboard', '/admin'], ['admin-tenders', '/admin/tenders'], ['admin-tender', `/admin/tenders/${TENDER}`],
+  ['admin-vendors', '/admin/vendors'], ['admin-vendor', `/admin/vendors/${VENDOR}`],
+  ['admin-applications', '/admin/applications'], ['admin-application', `/admin/applications/${APPLICATION}`],
+  ['admin-room', `/admin/rooms/${ROOM_PATH.split('/')[2]}`], ['admin-users', '/admin/users'],
 ];
-const FINANCE_PAGES = [['admin-lead-finance', `/admin/leads/${FINANCE_LEAD}`]];
-const MOBILE = [['m-home', '/'], ['m-vehicle', `/pre-owned/${VEHICLE}`], ['m-service', '/service#book'], ['m-test-drive', '/test-drive'], ['m-admin-dashboard', '/admin'], ['m-admin-lead', `/admin/leads/${LEAD}`]];
+const MOBILE = [['m-home', '/'], ['m-tender', '/tenders'], ['m-prequal', '/prequalification'], ['m-project', '/projects/caymanas-sewage-conveyance'], ['m-admin-dashboard', '/admin'], ['m-admin-vendor', `/admin/vendors/${VENDOR}`]];
 
 const browser = await puppeteer.launch({ executablePath: CHROME, headless: 'new', protocolTimeout: 60000, args: ['--hide-scrollbars', '--no-sandbox'] });
 const page = await browser.newPage();
@@ -38,10 +43,9 @@ await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduc
 
 async function settle() {
   await page.evaluate(async () => {
-    // Scroll-reveal blocks and the rolling odometer numerals: show their final state.
+    // Scroll-reveal blocks: show their final state.
     document.querySelectorAll('[data-reveal]').forEach(e => e.classList.add('is-visible'));
-    document.querySelectorAll('.odo.roll').forEach(e => e.classList.remove('roll'));
-    // Lazy images below the fold would be blank in a full-page capture: load them all now.
+        // Lazy images below the fold would be blank in a full-page capture: load them all now.
     document.querySelectorAll('img[loading="lazy"]').forEach(i => { i.loading = 'eager'; });
     window.scrollTo(0, document.body.scrollHeight); await new Promise(r => setTimeout(r, 400)); window.scrollTo(0, 0);
     await Promise.race([
@@ -167,13 +171,13 @@ for (const [n, u] of [...PUBLIC, ...FLOWS]) shots.push(await shoot(n, u));
 const DESK = { width: 1280, height: 1000 };
 shots.push(await shoot(...ADMIN_PAGES[0], DESK));
 for (const [n, u] of MOBILE.filter(([n]) => !n.startsWith('m-admin'))) shots.push(await shoot(n, u, { width: 390, height: 844, mobile: true, fullPage: false }));
-await login('admin@hadeed.test');
-for (const [n, u] of ADMIN_PAGES.slice(1)) shots.push(await shoot(n, u, { ...DESK, fullPage: !u.endsWith('/finance') }));
+await login('admin@ypseaton.test');
+for (const [n, u] of ADMIN_PAGES.slice(1)) shots.push(await shoot(n, u, DESK));
 for (const [n, u] of MOBILE.filter(([n]) => n.startsWith('m-admin'))) shots.push(await shoot(n, u, { width: 390, height: 844, mobile: true, fullPage: false }));
 await logout();
-// The finance role is the only one that can open ID and pay slips, so that view is captured as finance.
-await login('finance@hadeed.test');
-for (const [n, u] of FINANCE_PAGES) shots.push(await shoot(n, u));
+// Each role's overview leads with its own number: procurement sees certificates, HR sees waiting applicants.
+await login('procurement@ypseaton.test');
+shots.push(await shoot('admin-dashboard-procurement', '/admin', DESK));
 await logout();
 fs.writeFileSync(path.join(OUT, 'chunks.json'), JSON.stringify(Object.fromEntries(shots.map(s => [s.name, s])), null, 1));
 await browser.close();
