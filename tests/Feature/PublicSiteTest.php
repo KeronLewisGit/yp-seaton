@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\JobPosting;
 use App\Support\Portfolio;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class PublicSiteTest extends TestCase
@@ -22,7 +23,7 @@ class PublicSiteTest extends TestCase
         ];
     }
 
-    #[\PHPUnit\Framework\Attributes\DataProvider('pages')]
+    #[DataProvider('pages')]
     public function test_public_pages_render(string $url): void
     {
         $this->get($url)->assertOk()->assertSee('Y.P. Seaton', false);

@@ -16,6 +16,7 @@ use App\Models\Tender;
 use App\Models\Vendor;
 use App\Models\VendorDocument;
 use App\Support\Notify;
+use Carbon\CarbonInterface;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -83,7 +84,7 @@ class DashboardController extends Controller
             'title' => ($due->count() === 1 ? 'tender submission is' : 'tender submissions are').' due in the next '.Tender::DUE_SOON_DAYS.' days',
             'body' => $due->isEmpty()
                 ? 'No open tender closes this week.'.($passed ? " {$passed} open ".str('tender')->plural($passed).' passed the deadline without a decision; close them out.' : '')
-                : 'The next closes '.$due->first()?->submission_due_at->format('l j F \a\t g:i a').'. Unassigned invitations are flagged below.',
+                : 'The next closes '.$due->first()->submission_due_at->format('l j F \a\t g:i a').'. Unassigned invitations are flagged below.',
             'cta' => ['label' => $due->isEmpty() ? 'Open the tender register' : 'See what is due', 'href' => route('admin.tenders.index', $due->isEmpty() ? ['status' => 'open'] : ['due' => 1])],
             'items' => $due->take(6)->map(fn (Tender $t) => [
                 'href' => route('admin.tenders.show', $t), 'title' => $t->title, 'meta' => $t->entity_name.' · '.($t->assignee->name ?? 'Unassigned'),
@@ -128,11 +129,11 @@ class DashboardController extends Controller
             'area' => 'careers',
             'count' => $waiting->count(),
             'title' => ($waiting->count() === 1 ? 'application has' : 'applications have').' waited more than '.JobApplication::REVIEW_DAYS.' days for review',
-            'body' => $waiting->isEmpty() ? JobApplication::where('status', ApplicationStatus::New)->count().' new applications, all inside the window.' : 'The oldest arrived '.$waiting->first()?->created_at->diffForHumans().'.',
+            'body' => $waiting->isEmpty() ? JobApplication::where('status', ApplicationStatus::New)->count().' new applications, all inside the window.' : 'The oldest arrived '.$waiting->first()->created_at->diffForHumans().'.',
             'cta' => ['label' => 'Review applications', 'href' => route('admin.applications.index', $waiting->isEmpty() ? ['status' => 'new'] : ['waiting' => 1])],
             'items' => $waiting->take(6)->map(fn (JobApplication $a) => [
                 'href' => route('admin.applications.show', $a), 'title' => $a->full_name, 'meta' => $a->position(),
-                'chip' => $a->created_at->diffForHumans(null, true, true), 'tone' => 'attention', 'icon' => 'clock',
+                'chip' => $a->created_at->diffForHumans(['syntax' => CarbonInterface::DIFF_ABSOLUTE, 'short' => true]), 'tone' => 'attention', 'icon' => 'clock',
             ])->all(),
             'list' => 'Waiting longest',
             'empty' => 'Nobody is waiting.',

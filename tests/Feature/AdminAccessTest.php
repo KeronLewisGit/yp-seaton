@@ -12,8 +12,10 @@ use App\Models\JobPosting;
 use App\Models\Tender;
 use App\Models\User;
 use App\Models\Vendor;
+use Database\Seeders\DemoSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class AdminAccessTest extends TestCase
@@ -49,7 +51,7 @@ class AdminAccessTest extends TestCase
     }
 
     /** @param array<string, int> $expect */
-    #[\PHPUnit\Framework\Attributes\DataProvider('matrix')]
+    #[DataProvider('matrix')]
     public function test_each_role_sees_only_its_areas(Role $role, array $expect): void
     {
         $this->actingAs($this->staff($role));
@@ -171,7 +173,7 @@ class AdminAccessTest extends TestCase
 
     public function test_every_admin_screen_renders_with_data(): void
     {
-        $this->seed(\Database\Seeders\DemoSeeder::class);
+        $this->seed(DemoSeeder::class);
         $admin = User::where('email', 'admin@ypseaton.test')->firstOrFail();
         $this->actingAs($admin);
         $urls = ['/admin', '/admin/tenders', '/admin/tenders?status=open', '/admin/tenders?due=1', '/admin/vendors', '/admin/vendors?renewal=1', '/admin/applications', '/admin/jobs', '/admin/jobs/create', '/admin/enquiries', '/admin/rooms', '/admin/users'];

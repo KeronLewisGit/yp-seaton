@@ -10,6 +10,7 @@ use App\Notifications\RoomLinkShared;
 use App\Support\Notify;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -66,7 +67,7 @@ class RoomController extends Controller
             'file' => ['required', 'file', 'max:20480', 'mimes:'.implode(',', DocumentRoom::FILE_TYPES)],
         ], ['file.max' => 'Documents must be 20 MB or smaller.', 'file.mimes' => 'That file type is not accepted.']);
         $file = $request->file('file');
-        abort_unless($file instanceof \Illuminate\Http\UploadedFile, 422);
+        abort_unless($file instanceof UploadedFile, 422);
         $room->documents()->create([
             'title' => $data['title'],
             'category' => $data['category'],

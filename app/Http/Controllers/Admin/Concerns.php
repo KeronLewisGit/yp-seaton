@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /** Small helpers every back-office controller uses. */
 trait Concerns
@@ -28,7 +29,7 @@ trait Concerns
      * @param  list<string>  $header
      * @param  iterable<int, list<mixed>>  $rows
      */
-    protected function csv(string $name, array $header, iterable $rows): \Symfony\Component\HttpFoundation\StreamedResponse
+    protected function csv(string $name, array $header, iterable $rows): StreamedResponse
     {
         return response()->streamDownload(function () use ($header, $rows) {
             $out = fopen('php://output', 'w');

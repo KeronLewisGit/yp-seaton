@@ -7,6 +7,7 @@ use App\Support\Portfolio;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class PageController extends Controller
 {
@@ -36,7 +37,7 @@ class PageController extends Controller
     }
 
     /** The PDF made from the page above (npm run capability); falls back to the print page. */
-    public function capabilityPdf(): RedirectResponse|\Symfony\Component\HttpFoundation\BinaryFileResponse
+    public function capabilityPdf(): RedirectResponse|BinaryFileResponse
     {
         $file = public_path('downloads/'.yps('capability_pdf'));
 
@@ -73,7 +74,7 @@ class PageController extends Controller
         $urls = collect(['home', 'services', 'projects.index', 'about', 'capability', 'contact', 'tenders.create', 'prequal.create', 'careers.index', 'careers.apply', 'privacy', 'credits'])
             ->map(fn (string $r) => ['loc' => route($r), 'lastmod' => null])
             ->concat(Portfolio::all()->map(fn (array $p) => ['loc' => route('projects.show', $p['slug']), 'lastmod' => null])->values())
-            ->concat(JobPosting::open()->get(['slug', 'updated_at'])->map(fn (JobPosting $j) => ['loc' => route('careers.show', $j), 'lastmod' => $j->updated_at?->toAtomString()]));
+            ->concat(JobPosting::open()->get(['slug', 'updated_at'])->map(fn (JobPosting $j) => ['loc' => route('careers.show', $j), 'lastmod' => $j->updated_at->toAtomString()]));
 
         return response()->view('sitemap', ['urls' => $urls])->header('Content-Type', 'application/xml');
     }

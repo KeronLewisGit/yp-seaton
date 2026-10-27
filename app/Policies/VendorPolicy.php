@@ -3,9 +3,9 @@
 namespace App\Policies;
 
 use App\Enums\Area;
+use App\Models\User;
 use App\Models\Vendor;
 use App\Models\VendorDocument;
-use App\Models\User;
 
 /** Staff see the areas their role works in (Role::areas()); administrators see everything. */
 class VendorPolicy

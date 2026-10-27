@@ -32,7 +32,13 @@ final class Portfolio
     /** @return Collection<string, Project> */
     public static function featured(): Collection
     {
-        return self::all()->filter(fn (array $p) => ! empty($p['featured']));
+        return self::all()->filter(fn (array $p): bool => self::isFeatured($p));
+    }
+
+    /** @param array<string, mixed> $project */
+    private static function isFeatured(array $project): bool
+    {
+        return ($project['featured'] ?? false) === true;
     }
 
     /** @return Collection<string, Project> */

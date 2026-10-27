@@ -26,7 +26,7 @@ class JobPostingFactory extends Factory
             'openings' => 1,
             'summary' => 'Run a civil works crew.',
             'duties' => "Supervise the crew\nDaily site diary",
-            'requirements' => "5 years as a foreman",
+            'requirements' => '5 years as a foreman',
         ];
     }
 }

@@ -119,24 +119,7 @@ class DemoSeeder extends Seeder
     /** @param array<string, User> $staff */
     private function tenders(array $staff): void
     {
-        $rows = [
-            // title, entity, sector, method, parish, due in days, status, assignee
-            ['Rehabilitation of drains and culverts, Spanish Town (sample)', 'Sample Municipal Corporation', 'public', ProcurementMethod::Open, 'St. Catherine', 2, TenderStatus::Pricing, 'estimating'],
-            ['Shoreline revetment repairs, 600 m (sample)', 'Sample Port Agency', 'public', ProcurementMethod::Restricted, 'Kingston', 4, TenderStatus::Reviewing, 'estimating2'],
-            ['Sewer main replacement and manholes (sample)', 'Sample Water Utility', 'public', ProcurementMethod::Open, 'St. Andrew', 6, TenderStatus::New, null],
-            ['Two-storey classroom block, foundations and frame (sample)', 'Sample Education Agency', 'public', ProcurementMethod::Quotation, 'Clarendon', 6, TenderStatus::Pricing, 'estimating'],
-            ['Housing scheme infrastructure, 120 lots (sample)', 'Sample Housing Developer Ltd.', 'private', ProcurementMethod::Private, 'St. Catherine', 13, TenderStatus::Reviewing, 'estimating2'],
-            ['Road resurfacing and kerbs, 3.2 km (sample)', 'Sample Roads Agency', 'public', ProcurementMethod::Open, 'Manchester', 19, TenderStatus::New, null],
-            ['Gabion river training works (sample)', 'Sample Parish Council', 'public', ProcurementMethod::Quotation, 'St. Thomas', 26, TenderStatus::New, null],
-            ['Warehouse slab and site works (sample)', 'Sample Logistics Ltd.', 'private', ProcurementMethod::Private, 'St. Catherine', 33, TenderStatus::Reviewing, 'estimating'],
-            ['Sewage treatment plant upgrade, civil works (sample)', 'Sample Development Agency', 'public', ProcurementMethod::Open, 'St. Catherine', 41, TenderStatus::New, null],
-            ['Box culvert replacement (sample)', 'Sample Roads Agency', 'public', ProcurementMethod::Open, 'St. Mary', -6, TenderStatus::Submitted, 'estimating'],
-            ['Seawall extension, phase 2 (sample)', 'Sample Port Agency', 'public', ProcurementMethod::Restricted, 'Kingston', -40, TenderStatus::Won, 'estimating2'],
-            ['Community water supply pipeline (sample)', 'Sample Water Utility', 'public', ProcurementMethod::Open, 'St. Elizabeth', -55, TenderStatus::Lost, 'estimating'],
-            ['Apartment complex foundations (sample)', 'Sample Property Developer', 'private', ProcurementMethod::Private, 'St. Andrew', -20, TenderStatus::Declined, 'estimating2'],
-            ['Retaining wall and slope stabilisation (sample)', 'Sample Municipal Corporation', 'public', ProcurementMethod::Quotation, 'Portland', -90, TenderStatus::Won, 'estimating'],
-        ];
-        foreach ($rows as $i => [$title, $entity, $sector, $method, $parish, $days, $status, $who]) {
+        foreach (self::tenderRows() as $i => [$title, $entity, $sector, $method, $parish, $days, $status, $who]) {
             $due = today()->addDays($days)->setTime([10, 12, 14][$i % 3], 0);
             $received = $days > 0 ? now()->subDays(mt_rand(2, 18))->subHours(mt_rand(0, 8)) : $due->copy()->subDays(mt_rand(20, 35));
             $tender = $this->at($received, fn () => Tender::create([
@@ -165,6 +148,28 @@ class DemoSeeder extends Seeder
         }
         $first = Tender::orderBy('submission_due_at')->where('status', TenderStatus::Pricing)->first();
         $first?->log('Site visit done. Quotes requested from two formwork subcontractors and the ready-mix supplier.', 'note', $staff['estimating']);
+    }
+
+    /** @return list<array{string, string, string, ProcurementMethod, string, int, TenderStatus, string|null}> */
+    private static function tenderRows(): array
+    {
+        return [
+            // title, entity, sector, method, parish, due in days, status, assignee
+            ['Rehabilitation of drains and culverts, Spanish Town (sample)', 'Sample Municipal Corporation', 'public', ProcurementMethod::Open, 'St. Catherine', 2, TenderStatus::Pricing, 'estimating'],
+            ['Shoreline revetment repairs, 600 m (sample)', 'Sample Port Agency', 'public', ProcurementMethod::Restricted, 'Kingston', 4, TenderStatus::Reviewing, 'estimating2'],
+            ['Sewer main replacement and manholes (sample)', 'Sample Water Utility', 'public', ProcurementMethod::Open, 'St. Andrew', 6, TenderStatus::New, null],
+            ['Two-storey classroom block, foundations and frame (sample)', 'Sample Education Agency', 'public', ProcurementMethod::Quotation, 'Clarendon', 6, TenderStatus::Pricing, 'estimating'],
+            ['Housing scheme infrastructure, 120 lots (sample)', 'Sample Housing Developer Ltd.', 'private', ProcurementMethod::Private, 'St. Catherine', 13, TenderStatus::Reviewing, 'estimating2'],
+            ['Road resurfacing and kerbs, 3.2 km (sample)', 'Sample Roads Agency', 'public', ProcurementMethod::Open, 'Manchester', 19, TenderStatus::New, null],
+            ['Gabion river training works (sample)', 'Sample Parish Council', 'public', ProcurementMethod::Quotation, 'St. Thomas', 26, TenderStatus::New, null],
+            ['Warehouse slab and site works (sample)', 'Sample Logistics Ltd.', 'private', ProcurementMethod::Private, 'St. Catherine', 33, TenderStatus::Reviewing, 'estimating'],
+            ['Sewage treatment plant upgrade, civil works (sample)', 'Sample Development Agency', 'public', ProcurementMethod::Open, 'St. Catherine', 41, TenderStatus::New, null],
+            ['Box culvert replacement (sample)', 'Sample Roads Agency', 'public', ProcurementMethod::Open, 'St. Mary', -6, TenderStatus::Submitted, 'estimating'],
+            ['Seawall extension, phase 2 (sample)', 'Sample Port Agency', 'public', ProcurementMethod::Restricted, 'Kingston', -40, TenderStatus::Won, 'estimating2'],
+            ['Community water supply pipeline (sample)', 'Sample Water Utility', 'public', ProcurementMethod::Open, 'St. Elizabeth', -55, TenderStatus::Lost, 'estimating'],
+            ['Apartment complex foundations (sample)', 'Sample Property Developer', 'private', ProcurementMethod::Private, 'St. Andrew', -20, TenderStatus::Declined, 'estimating2'],
+            ['Retaining wall and slope stabilisation (sample)', 'Sample Municipal Corporation', 'public', ProcurementMethod::Quotation, 'Portland', -90, TenderStatus::Won, 'estimating'],
+        ];
     }
 
     private function vendors(User $officer): void

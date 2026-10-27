@@ -55,6 +55,7 @@ class StoreTenderRequest extends FormRequest
         ];
     }
 
+    /** @return list<\Closure(Validator): void> */
     public function after(): array
     {
         return [function (Validator $v): void {
