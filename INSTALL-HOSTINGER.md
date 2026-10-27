@@ -87,7 +87,7 @@ Open `https://www.ypseaton.com` and sign in at `/login` to check the install.
 
 ### Cron (both options)
 
-Certificate-expiry reminders run once a day from Laravel's scheduler (`app:remind-expiring`, 07:00 Jamaica time). In hPanel → Advanced → Cron Jobs, add a job that runs **every minute**:
+Certificate-expiry reminders run once a day from Laravel's scheduler (`app:remind-expiring`, 07:00 Jamaica time), and attachments held for unfinished forms are deleted after 24 hours (`app:prune-held-uploads`, hourly). In hPanel → Advanced → Cron Jobs, add a job that runs **every minute** (a daily cron would miss the 07:00 slot):
 
 ```
 /usr/bin/php /home/u123456789/domains/ypseaton.com/public_html/yps-app/artisan schedule:run >> /dev/null 2>&1
