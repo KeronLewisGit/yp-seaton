@@ -101,7 +101,7 @@
         <div><label for="f-trade" class="mb-1 block text-sm text-ink-2">Trade</label>
             <select id="f-trade" name="trade" class="a-input"><option value="">All</option><?php $__currentLoopData = yps('trades'); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k => $v): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><option value="<?php echo e($k); ?>" <?php if($filters['trade'] === $k): echo 'selected'; endif; ?>><?php echo e($v); ?></option><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?></select></div>
         <label class="flex min-h-11 items-center gap-2"><input type="checkbox" name="renewal" value="1" <?php if($filters['renewal']): echo 'checked'; endif; ?> class="h-5 w-5 accent-[var(--primary)]">Needs renewal</label>
-        <div class="min-w-0 flex-1"><label for="f-q" class="mb-1 block text-sm text-ink-2">Search</label><input id="f-q" name="q" value="<?php echo e($filters['q']); ?>" class="a-input w-full" placeholder="Company, TRN or reference"></div>
+        <div class="min-w-0 flex-1 basis-full sm:basis-56"><label for="f-q" class="mb-1 block text-sm text-ink-2">Search</label><input id="f-q" name="q" value="<?php echo e($filters['q']); ?>" class="a-input w-full" placeholder="Company, TRN or reference"></div>
         <button class="a-btn a-btn-primary">Filter</button>
     </form>
 

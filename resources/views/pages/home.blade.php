@@ -12,7 +12,7 @@
         </div>
         <div class="wrap grid gap-10 pb-12 pt-12 md:pb-20 md:pt-24 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-end">
             <div class="min-w-0">
-                <x-dim n="YPS" :left="true">Civil engineering contractors · Kingston · since {{ yps('founded') }}</x-dim>
+                <x-dim n="YPS" :left="true">Contractors since {{ yps('founded') }}</x-dim>
                 <h1 class="display-1 mt-6 max-w-[15ch]">Shorelines, sewers and housing infrastructure for Jamaica.</h1>
                 <p class="lead mt-6 max-w-[56ch] text-white/85">Y.P. Seaton &amp; Associates builds the public works that keep roads open, runways dry and new communities serviced, for government agencies and private developers across the island.</p>
                 <div class="mt-8 flex flex-wrap gap-3">

@@ -32,6 +32,7 @@ return [
         'city' => 'Kingston 10',
         'country' => 'Jamaica',
     ],
+    'website' => 'www.ypseaton.com',
     'map_url' => 'https://www.google.com/maps/search/?api=1&query=52c+Molynes+Road+Kingston+10+Jamaica',
     // From the 2014–2019 site. Confirm they still apply.
     'hours' => [

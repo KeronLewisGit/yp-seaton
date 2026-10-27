@@ -16,7 +16,7 @@
             <select id="f-sector" name="sector" class="a-input"><option value="">All</option>@foreach (\App\Models\Tender::SECTORS as $k => $v)<option value="{{ $k }}" @selected($filters['sector'] === $k)>{{ ucfirst($k) }}</option>@endforeach</select></div>
         <div><label for="f-assigned" class="mb-1 block text-sm text-ink-2">Estimator</label>
             <select id="f-assigned" name="assigned" class="a-input"><option value="">Anyone</option><option value="none" @selected($filters['assigned'] === 'none')>Unassigned</option>@foreach ($staff as $s)<option value="{{ $s->id }}" @selected($filters['assigned'] === (string) $s->id)>{{ $s->name }}</option>@endforeach</select></div>
-        <div class="min-w-0 flex-1"><label for="f-q" class="mb-1 block text-sm text-ink-2">Search</label><input id="f-q" name="q" value="{{ $filters['q'] }}" class="a-input w-full" placeholder="Title, entity or reference"></div>
+        <div class="min-w-0 flex-1 basis-full sm:basis-56"><label for="f-q" class="mb-1 block text-sm text-ink-2">Search</label><input id="f-q" name="q" value="{{ $filters['q'] }}" class="a-input w-full" placeholder="Title, entity or reference"></div>
         <button class="a-btn a-btn-primary">Filter</button>
     </form>
 

@@ -49,7 +49,7 @@
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['n' => 'YPS','left' => true]); ?>Civil engineering contractors · Kingston · since <?php echo e(yps('founded')); ?> <?php echo $__env->renderComponent(); ?>
+<?php $component->withAttributes(['n' => 'YPS','left' => true]); ?>Contractors since <?php echo e(yps('founded')); ?> <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginala53af10838414bdf9be8a5f6cb1173cd)): ?>
 <?php $attributes = $__attributesOriginala53af10838414bdf9be8a5f6cb1173cd; ?>

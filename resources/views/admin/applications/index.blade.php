@@ -11,7 +11,7 @@
         <div><label for="f-job" class="mb-1 block text-sm text-ink-2">Posting</label>
             <select id="f-job" name="job" class="a-input max-w-[16rem]"><option value="">All</option>@foreach ($jobs as $j)<option value="{{ $j->id }}" @selected($filters['job'] === (string) $j->id)>{{ $j->title }}</option>@endforeach</select></div>
         <label class="flex min-h-11 items-center gap-2"><input type="checkbox" name="waiting" value="1" @checked($filters['waiting']) class="h-5 w-5 accent-[var(--primary)]">Waiting over {{ \App\Models\JobApplication::REVIEW_DAYS }} days</label>
-        <div class="min-w-0 flex-1"><label for="f-q" class="mb-1 block text-sm text-ink-2">Search</label><input id="f-q" name="q" value="{{ $filters['q'] }}" class="a-input w-full" placeholder="Name, phone or reference"></div>
+        <div class="min-w-0 flex-1 basis-full sm:basis-56"><label for="f-q" class="mb-1 block text-sm text-ink-2">Search</label><input id="f-q" name="q" value="{{ $filters['q'] }}" class="a-input w-full" placeholder="Name, phone or reference"></div>
         <button class="a-btn a-btn-primary">Filter</button>
     </form>
     <div class="a-card mt-5 min-w-0">

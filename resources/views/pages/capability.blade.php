@@ -29,7 +29,7 @@
             <dl class="text-sm leading-relaxed sm:text-right">
                 <div>{{ yps('address.street') }}, {{ yps('address.city') }}, {{ yps('address.country') }}</div>
                 <div>Tel. {{ format_phone(yps('phone')) }} · {{ yps('email') }}</div>
-                <div>{{ parse_url(route('home'), PHP_URL_HOST) }}</div>
+                <div>{{ yps('website') }}</div>
             </dl>
         </header>
 
@@ -73,15 +73,15 @@
                     </tbody>
                 </table>
             </div>
-            <p class="mt-2 text-[0.75rem] text-[#3b5158]">Values are contract sums as published (Aston Ridge: final cost). Awards and Cabinet approvals are listed as such. Full sources: {{ route('projects.index') }}</p>
+            <p class="mt-2 text-[0.75rem] text-[#3b5158]">Values are contract sums as published (Aston Ridge: final cost). Awards and Cabinet approvals are listed as such. Full sources: {{ yps('website') }}/projects</p>
         </section>
 
         <section class="mt-7 grid gap-6 text-[0.875rem] sm:grid-cols-2">
             <div>
                 <h2 class="border-b border-[#10232a] pb-1 text-xs font-bold uppercase tracking-[0.16em]">Working with us</h2>
                 <ul class="mt-3 space-y-1.5">
-                    <li>Tender invitations and RFQs: {{ route('tenders.create') }}</li>
-                    <li>Subcontractor and supplier prequalification: {{ route('prequal.create') }}</li>
+                    <li>Tender invitations and RFQs: {{ yps('website') }}/tenders</li>
+                    <li>Subcontractor and supplier prequalification: {{ yps('website') }}/prequalification</li>
                     <li>Private document links for client project teams</li>
                 </ul>
             </div>
